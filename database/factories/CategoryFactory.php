@@ -1,0 +1,34 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Category;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+class CategoryFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Category::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $category_name = $this->faker->unique()->words(2 , true);
+
+        return [
+            'category_name' => $category_name,
+            'category_slug' => Str::slug($category_name),
+            'category_image' => $this->faker->imageUrl(1200 , 300 , 'category' ,true),
+            'category_description' => $this->faker->paragraph(3)
+        ];
+    }
+}

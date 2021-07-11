@@ -64,6 +64,7 @@ Route::middleware('auth')->prefix('/dashboard')->name('dashboard.')->group(funct
 
             Route::get('/', [PaymentsController::class, 'index'])->name('settings');
             Route::post('/setPaymentsSettings', [PaymentsController::class, 'setPaymentsSettings'])->name('setPaymentsSettings');
+            Route::post('/addCurrency', [CurrencyController::class, 'addCurrency'])->name('addCurrency');
         });
     });
 });

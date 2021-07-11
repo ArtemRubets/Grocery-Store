@@ -21,7 +21,21 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
     public function getCurrencyByCode($currencyCode)
     {
-        return $this->startCondition()->where('code', $currencyCode)->first();
+        return $this->startCondition()->where('code', $currencyCode)->firstOrFail();
     }
 
+    public function saveCurrency($currentData, $currencySymbol)
+    {
+        if ($currentData && $currencySymbol){
+
+            return $this->startCondition()->create([
+                'symbol' => $currencySymbol,
+                'code' => $currentData->cc,
+                'rate' => $currentData->rate,
+                'status' => 0
+            ]);
+
+        }
+
+    }
 }

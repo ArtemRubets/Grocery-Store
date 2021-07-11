@@ -19,8 +19,10 @@ class PaymentsController extends Controller
 
     public function index()
     {
+        $availableCurrencies = CurrencyService::getAvailableCurrencies();
+
         if (View::exists('dashboard.pages.payments')){
-            return \view('dashboard.pages.payments');
+            return \view('dashboard.pages.payments', compact('availableCurrencies'));
         }
         abort(404);
     }

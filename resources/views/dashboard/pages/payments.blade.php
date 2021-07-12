@@ -18,7 +18,7 @@
                     @endif
 
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
+                        <div class="panel panel-info">
                             <div class="panel-heading" role="tab" id="headingOne">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-default">
+                        <div class="panel panel-info">
                             <div class="panel-heading" role="tab" id="headingTwo">
                                 <h4 class="panel-title">
                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
@@ -63,7 +63,7 @@
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
+                            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel"
                                  aria-labelledby="headingTwo">
                                 <div class="panel-body">
                                     <form method="POST" action="{{ route('dashboard.payments.addCurrency') }}">

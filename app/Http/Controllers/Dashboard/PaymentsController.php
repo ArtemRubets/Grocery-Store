@@ -29,6 +29,7 @@ class PaymentsController extends Controller
 
     public function setPaymentsSettings(Request $request)
     {
+        //TODO not finalized
         $defaultCurrency = $this->currencyRepository->setDefaultCurrency($request->input('default-currency'));
 
         if ($defaultCurrency) return redirect()->back()

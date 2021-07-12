@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -11,9 +12,11 @@ class CurrencyService
 {
     public static function getAvailableCurrencies()
     {
-        if (Cache::has('availableCurrencies')){
-           return Cache::get('availableCurrencies');
+        if (!Cache::has('availableCurrencies')){
+            Artisan::call('currencies:get');
         }
+
+        return Cache::get('availableCurrencies');
     }
 
     public static function findCurrencyByCode($code)
@@ -42,6 +45,7 @@ class CurrencyService
         $response = self::getResponce();
 
         $collect = collect($response->object());
+
         $exceptions = ['XAU', 'XAG', 'XPT', 'XPD'];
 
         return $collect->reject(function ($item) use ($exceptions){

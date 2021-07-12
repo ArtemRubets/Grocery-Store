@@ -41,9 +41,10 @@ class CurrentCurrencies extends Command
     public function handle(ICurrencyRepositoryInterface $currencyRepository)
     {
         $currentCurrencies = CurrencyService::regularizeResponce();
-        $updateRates = $currencyRepository->updateCurrenciesRates();
 
         Cache::put('availableCurrencies', $currentCurrencies);
+
+        $updateRates = $currencyRepository->updateCurrenciesRates();
 
         if ($currentCurrencies && $updateRates){
             $this->info('Currencies has been updated');

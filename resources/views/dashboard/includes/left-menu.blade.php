@@ -24,16 +24,27 @@
                     <li class="dropdown mega-dropdown active">
                         <a @currentroute("dashboard.product*") href="{{ route('dashboard.product-categories') }}">Products</a>
                     </li>
-                    <li class="dropdown mega-dropdown active">
-                        <a @currentroute("dashboard.payments.settings") href="{{ route('dashboard.payments.settings') }}">Payments</a>
-                    </li>
+
+                    @admin
+                        <li class="dropdown mega-dropdown active">
+                            <a @currentroute("dashboard.payments.settings") href="{{ route('dashboard.payments.settings') }}">Payments</a>
+                        </li>
+                    @endadmin
+
                     <li>
                         <a href="#">Orders</a>
                     </li>
+
+                    @admin
+                        <li>
+                            <a @currentroute("dashboard.general.*") href="{{ route('dashboard.general.index') }}">General Settings</a>
+                        </li>
+                    @endadmin
+
                 @endmanagement
-                <li>
-                    <a href="#">Profile</a>
-                </li>
+                    <li>
+                        <a href="#">Profile</a>
+                    </li>
 
             </ul>
         </div><!-- /.navbar-collapse -->

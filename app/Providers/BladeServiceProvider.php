@@ -28,11 +28,13 @@ class BladeServiceProvider extends ServiceProvider
         Blade::if('management', function (){
 
             $role = session('user_role');
-            $condition = false;
+            return ($role === 'admin' || $role === 'manager') ? true : false;
+        });
 
-            if ($role == 'admin' || $role == 'manager') $condition = true;
+        Blade::if('admin', function (){
 
-            return $condition;
+            $role = session('user_role');
+            return $role === 'admin' ? true : false;
         });
 
         Blade::directive('currentroute', function ($routeName){

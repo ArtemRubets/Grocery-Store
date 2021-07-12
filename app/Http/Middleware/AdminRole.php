@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class ManagementRoles
+
+class AdminRole
 {
     /**
      * Handle an incoming request.
@@ -19,10 +19,9 @@ class ManagementRoles
     {
         $role = session('user_role');
 
-        if ($role === 'admin' || $role === 'manager'){
-            return $next($request);
-        }
+        if ($role === 'admin') return $next($request);
 
-        return redirect()->back();
+        \Auth::logout();
+        return redirect()->route('auth');
     }
 }

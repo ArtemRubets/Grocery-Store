@@ -5,12 +5,14 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategory;
+use App\Http\Controllers\Dashboard\GeneralController;
 use App\Http\Controllers\Dashboard\IndexController as DashboardIndex;
 use App\Http\Controllers\Dashboard\PaymentsController;
 use App\Http\Controllers\Dashboard\ProductController as DashboardProduct;
 use App\Http\Controllers\Dashboard\TrashController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\AdminRole;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,14 +60,27 @@ Route::middleware('auth')->prefix('/dashboard')->name('dashboard.')->group(funct
         });
 
         /*
-         * Payments
+         * Admin
          * */
-        Route::prefix('/payments')->name('payments.')->group(function (){
+        Route::middleware(AdminRole::class)->group(function (){
+            /*
+            * Payments
+            * */
+            Route::prefix('/payments')->name('payments.')->group(function (){
 
-            Route::get('/', [PaymentsController::class, 'index'])->name('settings');
-            Route::post('/setPaymentsSettings', [PaymentsController::class, 'setPaymentsSettings'])->name('setPaymentsSettings');
-            Route::post('/addCurrency', [CurrencyController::class, 'addCurrency'])->name('addCurrency');
+                Route::get('/', [PaymentsController::class, 'index'])->name('settings');
+                Route::post('/setPaymentsSettings', [PaymentsController::class, 'setPaymentsSettings'])->name('setPaymentsSettings');
+                Route::post('/addCurrency', [CurrencyController::class, 'addCurrency'])->name('addCurrency');
+            });
+
+            /*
+             * General Settings
+             * */
+            Route::prefix('/general')->name('general.')->group(function (){
+                Route::get('/index', [GeneralController::class, 'index'])->name('index');
+            });
         });
+
     });
 });
 /*

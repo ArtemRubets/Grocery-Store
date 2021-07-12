@@ -3,41 +3,28 @@
 
 namespace App\Services;
 
-use App\Interfaces\ICurrencyRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CurrencyService
 {
-    protected $currencyRepository;
-
-    public function __construct(ICurrencyRepositoryInterface $currencyRepository)
-    {
-        $this->currencyRepository = $currencyRepository;
-    }
-
-    public function setDefaultCurrency($currencyCode = 'UAH')
-    {
-        if ($currencyCode){
-            $currency = $this->currencyRepository->getCurrencyByCode($currencyCode);
-            $currenciesList = $this->currencyRepository->getCurrenciesList();
-
-            foreach ($currenciesList as $item){
-                $item->where('status', 1)->update(['status' => 0]);
-            }
-
-            $currency->status = 1;
-            $currency->save();
-
-            return $currency;
-        }
-
-        throw new \Exception('Currency code is null');
-    }
-
     public static function getAvailableCurrencies()
     {
+        if (Cache::has('availableCurrencies')){
+           return Cache::get('availableCurrencies');
+        }
+    }
 
+    public static function findCurrencyByCode($code)
+    {
+        $currencies = self::getAvailableCurrencies();
+
+        return $currencies->where('cc', $code)->first();
+    }
+
+    private static function getResponce()
+    {
         $response = Http::get(config('payments.currency.API_url'), [
             'json'
         ]);
@@ -47,20 +34,23 @@ class CurrencyService
             $response->throw();
         }
 
-        $collect = collect($response->object());
-
-        $filtered = $collect->filter(function ($value){
-            //TODO How to do shorten?
-            return $value->cc !== 'XAU' && $value->cc !== 'XAG' && $value->cc !== 'XPT' && $value->cc !== 'XPD';
-        });
-
-        return $filtered;
+        return $response;
     }
 
-    public static function findCurrencyByCode($code)
+    public static function regularizeResponce()
     {
-        $currencies = self::getAvailableCurrencies();
+        $response = self::getResponce();
 
-        return $currencies->where('cc', $code)->first();
+        $collect = collect($response->object());
+        $exceptions = ['XAU', 'XAG', 'XPT', 'XPD'];
+
+        return $collect->reject(function ($item) use ($exceptions){
+
+            foreach ($exceptions as $key => $value){
+                if ($item->cc == $value) return $item;
+            }
+
+        });
     }
+
 }

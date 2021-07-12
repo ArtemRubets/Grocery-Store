@@ -12,4 +12,6 @@ interface ICurrencyRepositoryInterface
     public function getCurrencyByCode($currencyCode);
 
     public function saveCurrency($currentData, $currencySymbol);
+
+    public function updateCurrenciesRates();
 }

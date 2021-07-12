@@ -8,6 +8,14 @@
             <div class="row">
                 <div class="col-md-12">
 
+                    @if(session('setDefaultStatus'))
+                        <div class="alert @if(session('setDefaultError'))alert-danger @else alert-success @endif alert-dismissible"
+                             role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ session('setDefaultStatus') }}
+                        </div>
+                    @endif
 
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default">

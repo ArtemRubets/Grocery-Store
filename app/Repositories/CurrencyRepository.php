@@ -7,7 +7,6 @@ namespace App\Repositories;
 use App\Interfaces\ICurrencyRepositoryInterface;
 use App\Models\Currency;
 use App\Services\CurrencyService;
-use Illuminate\Database\Eloquent\Model;
 
 class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryInterface
 {
@@ -77,9 +76,13 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
         foreach ($bdResults as $bdResult) {
             foreach ($currentRates as $rate) {
-                $updated = $bdResult->where('code', $rate->cc)->update([
-                    'rate' => round($rate->rate, 2)
-                ]);
+
+                if ($bdResult->code == $rate->cc){
+                    $updated = $bdResult->where('code', $rate->cc)->update([
+                        'rate' => round($rate->rate, 2)
+                    ]);
+                }
+
             }
         }
         return $updated;

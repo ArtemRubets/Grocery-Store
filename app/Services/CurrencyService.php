@@ -10,13 +10,27 @@ use Illuminate\Support\Facades\Log;
 
 class CurrencyService
 {
-    public static function getAvailableCurrencies()
+    public static function getAvailableCurrencies($currenciesList = null)
     {
         if (!Cache::has('availableCurrencies')){
             Artisan::call('currencies:get');
         }
 
-        return Cache::get('availableCurrencies')->sortBy('cc');
+        $availableCurrencies = Cache::get('availableCurrencies')->sortBy('cc');
+
+        if ($currenciesList){
+            $availableCurrenciesFiltered = $availableCurrencies->reject(function ($item) use ($currenciesList) {
+                foreach ($currenciesList as $key => $value) {
+                    if ($value->code == $item->cc) {
+                        return $item;
+                    }
+                }
+                return null;
+            });
+            return $availableCurrenciesFiltered;
+        }
+
+        return $availableCurrencies;
     }
 
     public static function findCurrencyByCode($code)
@@ -33,7 +47,7 @@ class CurrencyService
         ]);
 
         if ($response->failed()){
-            Log::error('Can\'t take data on request '. config('payments.currency.API_url'));
+            Log::error('Can\'t take data from request '. config('payments.currency.API_url'));
             $response->throw();
         }
 

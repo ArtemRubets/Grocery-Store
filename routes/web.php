@@ -3,8 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategory;
+use App\Http\Controllers\Dashboard\CurrencyController;
 use App\Http\Controllers\Dashboard\GeneralController;
 use App\Http\Controllers\Dashboard\IndexController as DashboardIndex;
 use App\Http\Controllers\Dashboard\PaymentsController;
@@ -70,7 +70,9 @@ Route::middleware('auth')->prefix('/dashboard')->name('dashboard.')->group(funct
 
                 Route::get('/', [PaymentsController::class, 'index'])->name('settings');
                 Route::post('/setPaymentsSettings', [PaymentsController::class, 'setPaymentsSettings'])->name('setPaymentsSettings');
-                Route::post('/addCurrency', [CurrencyController::class, 'addCurrency'])->name('addCurrency');
+                Route::resource('/currency', CurrencyController::class)
+                    ->only(['index', 'store'])->names('currency');
+                Route::delete('/currency/destroyMany', [CurrencyController::class, 'destroyMany'])->name('currency.destroyMany');
             });
 
             /*

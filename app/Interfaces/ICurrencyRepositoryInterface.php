@@ -14,4 +14,6 @@ interface ICurrencyRepositoryInterface
     public function saveCurrency($currentData, $currencySymbol);
 
     public function updateCurrenciesRates();
+
+    public function destroyCurrencies($selectedCurrencies);
 }

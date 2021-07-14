@@ -16,7 +16,7 @@ class CurrencyService
             Artisan::call('currencies:get');
         }
 
-        return Cache::get('availableCurrencies');
+        return Cache::get('availableCurrencies')->sortBy('cc');
     }
 
     public static function findCurrencyByCode($code)

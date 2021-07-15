@@ -37,7 +37,7 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
     public function getCurrenciesList()
     {
-        return $this->startCondition()->get(['id', 'code', 'symbol', 'rate', 'status']);
+        return $this->startCondition()->get(['id', 'code', 'symbol', 'rate', 'status', 'updated_at']);
     }
 
     public function getCurrencyByCode($currencyCode)
@@ -72,7 +72,7 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
             return null;
         });
 
-        $bdResults = $this->startCondition()->where('status', 0)->get();
+        $bdResults = $this->startCondition()->notMainCurrencies()->get();
 
         foreach ($bdResults as $bdResult) {
             foreach ($currentRates as $rate) {
@@ -102,5 +102,10 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
         }
 
         return $destroyed;
+    }
+
+    public function getMainCurrency()
+    {
+        return $this->startCondition()->where('status', 1)->firstOrFail(['code', 'symbol']);
     }
 }

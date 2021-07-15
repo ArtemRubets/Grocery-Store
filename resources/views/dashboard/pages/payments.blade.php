@@ -8,38 +8,7 @@
             <div class="row">
                 <div class="col-md-12">
 
-                    @if(session('setDefaultStatus'))
-                        <div
-                            class="alert @if(session('setDefaultError'))alert-danger @else alert-success @endif alert-dismissible"
-                            role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span>
-                            </button>
-                            {{ session('setDefaultStatus') }}
-                        </div>
-                    @endif
-
-                    @if(session('add_currency_message'))
-                        <div
-                            class="alert @if(session('flash_error'))alert-danger @else alert-success @endif alert-dismissible"
-                            role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span>
-                            </button>
-                            {{ session('add_currency_message') }}
-                        </div>
-                    @endif
-
-                    @if(session('destroy_currency_message'))
-                        <div
-                            class="alert @if(session('flash_error'))alert-danger @else alert-success @endif alert-dismissible"
-                            role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span>
-                            </button>
-                            {{ session('destroy_currency_message') }}
-                        </div>
-                    @endif
+                    @include('dashboard.includes.flash-alerts')
 
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-info">
@@ -93,6 +62,11 @@
                                                                             id="delete-currencies-tab" data-toggle="tab"
                                                                             aria-controls="delete-currencies"
                                                                             aria-expanded="false">Delete currency</a>
+                                        </li>
+                                        <li role="presentation" class=""><a href="#show-rates" role="tab"
+                                                                            id="show-rates-tab" data-toggle="tab"
+                                                                            aria-controls="show-rates"
+                                                                            aria-expanded="false">Show rates</a>
                                         </li>
                                     </ul>
 
@@ -215,6 +189,49 @@
 
                                             </form>
 
+
+                                        </div>
+
+                                        <div role="tabpanel" class="tab-pane fade" id="show-rates"
+                                             aria-labelledby="show-rates-tab">
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label>Show rates</label>
+
+
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                            <tr class="active">
+                                                                <th>№</th>
+                                                                <th>Code</th>
+                                                                <th>Rate</th>
+                                                                <th>Exchange rate for</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+
+                                                            @foreach($currenciesList as $currency)
+
+                                                                @if($currency->status == 0)
+                                                                    <tr>
+                                                                        <th scope="row">{{ $loop->iteration - 1 }}</th>
+                                                                        <td>{{ $currency->code }}</td>
+                                                                        <td>{{ $currency->rate }}{{ $mainCurrency->symbol }} ({{ $mainCurrency->code }})</td>
+                                                                        <td>{{ $currency->updated_at }}</td>
+                                                                    </tr>
+                                                                @endif
+
+                                                            @endforeach
+
+
+                                                            </tbody>
+                                                        </table>
+
+
+                                                    </div>
+
+                                                </div>
 
                                         </div>
 

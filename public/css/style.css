@@ -1940,10 +1940,6 @@ li.list-group-item1 {
     color: #FA1818;
 }
 
-.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-    border-top: none !important;
-}
-
 .tab-content > .active {
     display: block;
     visibility: visible;
@@ -1998,8 +1994,6 @@ section#tables p {
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
     font-size: 0.9em;
-    color: #999;
-    border-top: none !important;
 }
 
 .tab-content > .active {
@@ -2351,7 +2345,6 @@ h2.typoh2 {
     padding: 2em;
     font-size: 14px;
     line-height: 2em;
-    color: #999;
 }
 
 a.pa_italic label {

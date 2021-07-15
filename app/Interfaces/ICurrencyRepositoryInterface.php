@@ -16,4 +16,6 @@ interface ICurrencyRepositoryInterface
     public function updateCurrenciesRates();
 
     public function destroyCurrencies($selectedCurrencies);
+
+    public function getMainCurrency();
 }

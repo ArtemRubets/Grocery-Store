@@ -23,8 +23,10 @@ class PaymentsController extends Controller
 
         $availableCurrencies = CurrencyService::getAvailableCurrencies($currenciesList);
 
+        $mainCurrency = $this->currencyRepository->getMainCurrency();
+
         if (View::exists('dashboard.pages.payments')){
-            return \view('dashboard.pages.payments', compact('availableCurrencies'));
+            return \view('dashboard.pages.payments', compact('availableCurrencies', 'mainCurrency'));
         }
         abort(404);
     }

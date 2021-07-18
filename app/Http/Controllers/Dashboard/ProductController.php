@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\View;
 class ProductController extends MainController
 {
     private $productRepository;
+    private $categoryRepository;
 
 
     public function __construct(IProductRepositoryInterface $productRepository,
                                 ICategoryRepositoryInterface $categoryRepository,){
-        parent::__construct($categoryRepository);
 
         $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**

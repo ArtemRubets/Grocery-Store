@@ -19,7 +19,12 @@ class Product extends Model
 
     public function setIsOfferAttribute($value)
     {
-        $this->attributes['is_offer'] = $value == 'on' ? true : false;
+        $this->attributes['is_offer'] = $value === 'on' ? true : false;
+    }
+
+    public function price()
+    {
+        return $this->hasMany(ProductPrice::class);
     }
 
     public function isEvaluable()

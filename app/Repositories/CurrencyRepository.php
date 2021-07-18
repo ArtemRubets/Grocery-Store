@@ -108,6 +108,6 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
     public function getMainCurrency()
     {
-        return $this->startCondition()->where('status', 1)->firstOrFail(['code', 'symbol']);
+        return $this->startCondition()->where('status', 1)->firstOrFail(['id', 'code', 'symbol']);
     }
 }

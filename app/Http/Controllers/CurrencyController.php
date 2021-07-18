@@ -25,6 +25,7 @@ class CurrencyController extends MainController
 
         session(['currency_symbol' => $currency->symbol]);
         session(['currency_code' => $currency->code]);
+        session(['currency_id' => $currency->id]);
 
         CurrencyService::convert($currency);
 

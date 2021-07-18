@@ -13,13 +13,18 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         return Product::class;
     }
 
-    public function getCategoryProducts($category){
+    public function getCategoryProducts($category, $currencyId){
 
-        $categoryProducts = $this->startCondition()->where('category_id', $category->id)
+        $categoryProducts = $this->startCondition()->with('price')->where('category_id', $category->id)
             ->orderBy('created_at')
             ->orderBy('product_count', 'desc')->get();
 
         foreach ($categoryProducts as $product){
+
+            $price = $this->getPrice($product, $currencyId);
+
+            $product->product_price = $price;
+
             if ($product->is_offer){
                 $priceWithOffer = round($product->product_price - ( $product->product_price * $product->offer_percent / 100 ), 2);
 
@@ -30,9 +35,14 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         return $categoryProducts;
     }
 
-    public function getProduct($product_slug){
+    public function getProduct($product_slug, $currencyId){
         $product = $this->startCondition()->where('product_slug' , $product_slug)
             ->firstOrFail();
+
+        $price = $this->getPrice($product, $currencyId);
+
+        $product->product_price = $price;
+
         if ($product->is_offer){
             $priceWithOffer = round($product->product_price - ( $product->product_price * $product->offer_percent / 100 ), 2);
 
@@ -67,4 +77,10 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         return $this->startCondition()->withTrashed()->where('id', $id)->forceDelete();
     }
 
+    public function getPrice($product, $currencyId)
+    {
+        $price = $product->price;
+
+       return $price->where('currency_id', $currencyId)->first()->price;
+    }
 }

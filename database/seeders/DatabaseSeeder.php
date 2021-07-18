@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
        Product::factory()->count(100)->create();
 
        $this->call([
-          CurrencySeeder::class
+          CurrencySeeder::class,
+          PricesSeeder::class
        ]);
     }
 }

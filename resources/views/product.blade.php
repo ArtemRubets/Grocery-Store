@@ -58,10 +58,11 @@
                 <div class="snipcart-item block">
                     <div class="snipcart-thumb agileinfo_single_right_snipcart">
                         @if($product->is_offer)
-                            <h4>{{ $product->product_price_with_offer }}$<span>{{ $product->product_price }}$</span>
+                            <h4>{{ $product->product_price_with_offer }}{{ session('currency_symbol', $defaultCurrency->symbol) }}
+                                <span>{{ $product->product_price }}{{ session('currency_symbol', $defaultCurrency->symbol) }}</span>
                             </h4>
                         @else
-                            <h4>{{ $product->product_price }}$</h4>
+                            <h4>{{ $product->product_price }}{{ session('currency_symbol', $defaultCurrency->symbol) }}</h4>
                         @endif
                     </div>
                     <div class="btn-group" role="group">

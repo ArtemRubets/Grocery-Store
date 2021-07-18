@@ -11,17 +11,16 @@ use Illuminate\Support\Facades\View;
 class CategoryController extends MainController
 {
     private $productRepository;
-
+    private $categoryRepository;
 
     public function __construct(IProductRepositoryInterface $productRepository , ICategoryRepositoryInterface $categoryRepository){
-        parent::__construct($categoryRepository);
 
         $this->productRepository = $productRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function index(CategoryFilterRequest $request, $category_slug){
 
-        $categoriesList = parent::getCategoriesList();
         $category = $this->categoryRepository->getCategory($category_slug);
 
         $categoryProductsAll = $this->productRepository->getCategoryProducts($category);
@@ -29,7 +28,7 @@ class CategoryController extends MainController
         $categoryProductsFiltered = (new ProductFilter($categoryProductsAll, $request))->apply();
 
         if (View::exists('category')){
-            return \view('category' , compact(['categoryProductsFiltered', 'categoryProductsAll' , 'categoriesList' , 'category']));
+            return \view('category' , compact(['categoryProductsFiltered', 'categoryProductsAll' , 'category']));
         }
         abort(404);
     }

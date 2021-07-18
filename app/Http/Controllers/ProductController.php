@@ -15,22 +15,17 @@ class ProductController extends MainController
     private $productRepository;
 
 
-    public function __construct(IProductRepositoryInterface $productRepository,
-                                ICategoryRepositoryInterface $categoryRepository,)
+    public function __construct(IProductRepositoryInterface $productRepository)
     {
-        parent::__construct($categoryRepository);
-
         $this->productRepository = $productRepository;
     }
 
     public function index(Request $request, $product_slug)
     {
-
-        $categoriesList = parent::getCategoriesList();
         $product = $this->productRepository->getProduct($product_slug);
 
         if (View::exists('product')){
-            return \view('product' , compact('product' , 'categoriesList'));
+            return \view('product' , compact('product'));
         }
         abort(404);
     }

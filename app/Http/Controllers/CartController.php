@@ -14,9 +14,7 @@ class CartController extends MainController
 
     private $productRepository;
 
-    public function __construct(IProductRepositoryInterface $productRepository ,
-                                ICategoryRepositoryInterface $categoryRepository,){
-        parent::__construct($categoryRepository);
+    public function __construct(IProductRepositoryInterface $productRepository){
 
         $this->productRepository = $productRepository;
     }
@@ -75,12 +73,10 @@ class CartController extends MainController
 
     public function index(){
 
-        $categoriesList = parent::getCategoriesList();
-
         $cart = Session::has('cart') ? Session::get('cart') : null;
 
         if (View::exists('cart')){
-            return \view('cart' , compact('categoriesList' , 'cart'));
+            return \view('cart' , compact('cart'));
         }
         abort(404);
     }

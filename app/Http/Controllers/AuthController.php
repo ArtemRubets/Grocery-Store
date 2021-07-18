@@ -12,10 +12,6 @@ use Illuminate\Support\Facades\View;
 
 class AuthController extends MainController
 {
-    public function __construct(ICategoryRepositoryInterface $categoryRepository)
-    {
-        parent::__construct($categoryRepository);
-    }
 
     public function register(RegisterFormRequest $request)
     {
@@ -76,10 +72,8 @@ class AuthController extends MainController
             return redirect()->route('home');
         }
 
-        $categoriesList = parent::getCategoriesList();
-
         if (View::exists('auth')){
-            return \view('auth' , compact('categoriesList'));
+            return \view('auth');
         }
         abort(404);
     }

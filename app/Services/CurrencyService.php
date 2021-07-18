@@ -3,6 +3,8 @@
 
 namespace App\Services;
 
+use App\Models\Currency;
+use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -69,6 +71,11 @@ class CurrencyService
             }
 
         });
+    }
+
+    public static function convert(Currency $currency)
+    {
+
     }
 
 }

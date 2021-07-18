@@ -11,18 +11,10 @@ use Illuminate\Support\Facades\View;
 
 class IndexController extends MainController
 {
-
-    public function __construct(ICategoryRepositoryInterface $categoryRepository)
-    {
-        parent::__construct($categoryRepository);
-    }
-
     public function index(){
 
-        $categoriesList = parent::getCategoriesList();
-
         if (View::exists('index')){
-            return \view('index' , compact('categoriesList'));
+            return \view('index');
         }
         abort(404);
     }

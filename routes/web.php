@@ -3,8 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategory;
-use App\Http\Controllers\Dashboard\CurrencyController;
+use App\Http\Controllers\Dashboard\CurrencyController as DashboardCurrencyController;
 use App\Http\Controllers\Dashboard\GeneralController;
 use App\Http\Controllers\Dashboard\IndexController as DashboardIndex;
 use App\Http\Controllers\Dashboard\PaymentsController;
@@ -40,19 +41,19 @@ Route::middleware('auth')->prefix('/dashboard')->name('dashboard.')->group(funct
         /*
          * Products
          * */
-        Route::get('product-categories' , [DashboardCategory::class , 'productCategories'])
+        Route::get('product-categories', [DashboardCategory::class, 'productCategories'])
             ->name('product-categories');
         Route::resource('categories', DashboardCategory::class)
-        ->except('show');
-        Route::resource('products' , DashboardProduct::class)
-        ->except('show');
+            ->except('show');
+        Route::resource('products', DashboardProduct::class)
+            ->except('show');
 
         /*
          * Products Trash
          * */
-        Route::prefix('/trash')->name('trash.')->group(function (){
+        Route::prefix('/trash')->name('trash.')->group(function () {
 
-            Route::prefix('/products')->name('products.')->group(function (){
+            Route::prefix('/products')->name('products.')->group(function () {
                 Route::get('/', [TrashController::class, 'productsTrashIndex'])->name('index');
                 Route::post('/restore/{id}', [TrashController::class, 'restore'])->name('restore');
                 Route::delete('/force-delete/{id}', [TrashController::class, 'forceDelete'])->name('forceDelete');
@@ -62,23 +63,23 @@ Route::middleware('auth')->prefix('/dashboard')->name('dashboard.')->group(funct
         /*
          * Admin
          * */
-        Route::middleware(AdminRole::class)->group(function (){
+        Route::middleware(AdminRole::class)->group(function () {
             /*
             * Payments
             * */
-            Route::prefix('/payments')->name('payments.')->group(function (){
+            Route::prefix('/payments')->name('payments.')->group(function () {
 
                 Route::get('/', [PaymentsController::class, 'index'])->name('settings');
                 Route::post('/setPaymentsSettings', [PaymentsController::class, 'setPaymentsSettings'])->name('setPaymentsSettings');
-                Route::resource('/currency', CurrencyController::class)
+                Route::resource('/currency', DashboardCurrencyController::class)
                     ->only(['store', 'update'])->names('currency');
-                Route::delete('/currency/destroyMany', [CurrencyController::class, 'destroyMany'])->name('currency.destroyMany');
+                Route::delete('/currency/destroyMany', [DashboardCurrencyController::class, 'destroyMany'])->name('currency.destroyMany');
             });
 
             /*
              * General Settings
              * */
-            Route::prefix('/general')->name('general.')->group(function (){
+            Route::prefix('/general')->name('general.')->group(function () {
                 Route::get('/index', [GeneralController::class, 'index'])->name('index');
             });
         });
@@ -110,12 +111,13 @@ Route::prefix('/auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 /*
- * Another Routes
+ * Clients Routes
  * */
 Route::get('/{product}', [ProductController::class, 'index'])->name('good');
 Route::get('/category/{category_name}', [CategoryController::class, 'index'])->name('category');
 Route::post('/subscription/{product}', [ProductController::class, 'subscription'])->name('subscription');
 Route::get('/change-currency/{code}', [CurrencyController::class, 'changeCurrency'])->name('changeCurrency');
+
 
 
 

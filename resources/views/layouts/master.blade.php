@@ -47,8 +47,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         });
     </script>
     <!-- start-smoth-scrolling -->
-    @include('includes.header-product')
-    {{--    TODO fix this --}}
+
+    @if($viewName === 'product')
+        @include('includes.header-product')
+    @endif
 </head>
 
 <body>
@@ -101,7 +103,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <ul>
             <li class="dropdown profile_details_drop">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    Cur
+                    {{ session('currency', $defaultCurrency->symbol) }}
                     <div class="mega-dropdown-menu">
                         <div class="w3ls_vegetables">
                             <ul class="dropdown-menu drp-mnu">

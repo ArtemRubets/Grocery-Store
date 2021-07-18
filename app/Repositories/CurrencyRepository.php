@@ -93,7 +93,9 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
         $countAll = $this->startCondition()->count();
         $count = count($selectedCurrencies);
 
-        if (($countAll - $count) < 1){
+        $difference = $countAll - $count;
+
+        if ($difference < 1){
             return false;
         }
 

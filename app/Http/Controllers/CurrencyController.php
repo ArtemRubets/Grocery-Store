@@ -23,7 +23,8 @@ class CurrencyController extends MainController
     {
         $currency = $this->currencyRepository->getCurrencyByCode($currencyCode);
 
-        session(['currency' => $currency->symbol]);
+        session(['currency_symbol' => $currency->symbol]);
+        session(['currency_code' => $currency->code]);
 
         CurrencyService::convert($currency);
 

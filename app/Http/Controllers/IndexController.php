@@ -13,6 +13,8 @@ class IndexController extends MainController
 {
     public function index(){
 
+
+//        session()->forget('currency');
         if (View::exists('index')){
             return \view('index');
         }

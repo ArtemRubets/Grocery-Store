@@ -103,12 +103,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <ul>
             <li class="dropdown profile_details_drop">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {{ session('currency', $defaultCurrency->symbol) }}
+                    {{ session('currency_symbol', $defaultCurrency->symbol) }} ({{ session('currency_code', $defaultCurrency->code) }})
                     <div class="mega-dropdown-menu">
                         <div class="w3ls_vegetables">
                             <ul class="dropdown-menu drp-mnu">
                                 @foreach($currenciesList as $currency)
-                                    <li><a href="{{ route('changeCurrency', ['code' => $currency->code]) }}">{{ $currency->symbol }}</a></li>
+                                    <li>
+                                        <a href="{{ route('changeCurrency', ['code' => $currency->code]) }}">
+                                            {{ $currency->symbol }} ({{ $currency->code }})
+                                        </a>
+                                    </li>
                                 @endforeach
                             </ul>
                         </div>

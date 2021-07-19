@@ -31,6 +31,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(ICurrencyRepositoryInterface $currencyRepository)
     {
         $currenciesList = $currencyRepository->getCurrenciesList();
+
+        $defaultCurrency = $currencyRepository->getMainCurrency();
+
+        if (! session()->has('currency')){
+            session(['currency' => $defaultCurrency]);
+        }
+
         View::share('currenciesList', $currenciesList);
     }
 }

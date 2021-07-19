@@ -67,7 +67,7 @@
                                 </td>
                                 <td class="invert">{{ $product['item']->product_name }}</td>
 
-                                <td class="invert">${{$product['item']->is_offer ?
+                                <td class="invert">{{ $currency->symbol }}{{$product['item']->is_offer ?
                                     $product['item']->product_price_with_offer : $product['item']->product_price}}</td>
 
                                 <td class="invert">
@@ -89,9 +89,9 @@
                         <h4>Continue to basket</h4>
                         <ul>
                             @foreach($cart->items as $product)
-                                <li>{{ $product['item']->product_name }} <i>-</i> {{ $product['itemQuantity'] }}x <span>${{ $product['price'] }} </span></li>
+                                <li>{{ $product['item']->product_name }} <i>-</i> {{ $product['itemQuantity'] }}x <span>{{ $currency->symbol }}{{ $product['price'] }} </span></li>
                             @endforeach
-                                <li>Total <i>-</i> <span>${{ $cart->totalPrice }}</span></li>
+                                <li>Total <i>-</i> <span>{{ $currency->symbol }}{{ $cart->totalPrice }}</span></li>
                         </ul>
                     </div>
                     <div class="col-md-8 address_form_agile">

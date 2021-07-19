@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\ICurrencyRepositoryInterface;
 use App\Services\CurrencyService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class CurrencyController extends MainController
 {
@@ -23,9 +23,11 @@ class CurrencyController extends MainController
     {
         $currency = $this->currencyRepository->getCurrencyByCode($currencyCode);
 
-        session(['currency_symbol' => $currency->symbol]);
-        session(['currency_code' => $currency->code]);
-        session(['currency_id' => $currency->id]);
+        session(['currency' => $currency], $this->currencyRepository->getMainCurrency());
+
+        if (session()->has('cart')){
+            session()->forget('cart');
+        }
 
         CurrencyService::convert($currency);
 

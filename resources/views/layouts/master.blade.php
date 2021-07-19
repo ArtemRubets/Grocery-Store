@@ -103,7 +103,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <ul>
             <li class="dropdown profile_details_drop">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {{ session('currency_symbol', $defaultCurrency->symbol) }} ({{ session('currency_code', $defaultCurrency->code) }})
+                    {{ $currency->symbol }} ({{ $currency->code }})
                     <div class="mega-dropdown-menu">
                         <div class="w3ls_vegetables">
                             <ul class="dropdown-menu drp-mnu">

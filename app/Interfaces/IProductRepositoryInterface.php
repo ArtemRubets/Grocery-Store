@@ -9,9 +9,9 @@ interface IProductRepositoryInterface
 
     public function getModel();
 
-    public function getCategoryProducts($category, $currencyId);
+    public function getCategoryProducts($category);
 
-    public function getProduct($product_slug,$currencyId);
+    public function getProduct($product_slug);
 
     public function getProductForDashboard($id);
 
@@ -23,5 +23,5 @@ interface IProductRepositoryInterface
 
     public function forceDelete($id);
 
-    public function getPrice($product, $currencyId);
+    public function getPrice($product);
 }

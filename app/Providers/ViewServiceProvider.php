@@ -29,7 +29,7 @@ class ViewServiceProvider extends ServiceProvider
         View::composer(['index', 'cart', 'category', 'product', 'auth'], function ($view) use ($currencyRepository, $categoryRepository) {
             $view->with('categoriesList', $categoryRepository->getCategoriesList())
             ->with('viewName', $view->getName())
-            ->with('defaultCurrency', $currencyRepository->getMainCurrency());
+            ->with('currency', session('currency', $currencyRepository->getMainCurrency()));
         });
     }
 }

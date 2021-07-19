@@ -13,7 +13,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         return Product::class;
     }
 
-    public function getCategoryProducts($category, $currencyId){
+    public function getCategoryProducts($category){
 
         $categoryProducts = $this->startCondition()->with('price')->where('category_id', $category->id)
             ->orderBy('created_at')
@@ -21,7 +21,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
         foreach ($categoryProducts as $product){
 
-            $price = $this->getPrice($product, $currencyId);
+            $price = $this->getPrice($product);
 
             $product->product_price = $price;
 
@@ -35,11 +35,11 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         return $categoryProducts;
     }
 
-    public function getProduct($product_slug, $currencyId){
+    public function getProduct($product_slug){
         $product = $this->startCondition()->where('product_slug' , $product_slug)
             ->firstOrFail();
 
-        $price = $this->getPrice($product, $currencyId);
+        $price = $this->getPrice($product);
 
         $product->product_price = $price;
 
@@ -77,10 +77,10 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         return $this->startCondition()->withTrashed()->where('id', $id)->forceDelete();
     }
 
-    public function getPrice($product, $currencyId)
+    public function getPrice($product)
     {
         $price = $product->price;
 
-       return $price->where('currency_id', $currencyId)->first()->price;
+       return $price->where('currency_id', session('currency')->id)->first()->price;
     }
 }

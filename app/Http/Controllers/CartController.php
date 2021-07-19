@@ -12,21 +12,16 @@ use Illuminate\Support\Facades\View;
 
 class CartController extends MainController
 {
-
     private $productRepository;
-    private $currencyRepository;
 
-    public function __construct(IProductRepositoryInterface $productRepository, ICurrencyRepositoryInterface $currencyRepository){
+    public function __construct(IProductRepositoryInterface $productRepository){
 
         $this->productRepository = $productRepository;
-        $this->currencyRepository = $currencyRepository;
-
     }
 
     public function addToCart($product_slug){
 
-        $defaultCurrency = $this->currencyRepository->getMainCurrency();
-        $product = $this->productRepository->getProduct($product_slug, session('currency_id', $defaultCurrency->id));
+        $product = $this->productRepository->getProduct($product_slug);
 
         if ($product->product_count <= 0){
             return redirect()->back()->with('cart_status', 'Out of stock!');
@@ -47,8 +42,7 @@ class CartController extends MainController
     }
 
     public function removeFromCart($product_slug){
-        $defaultCurrency = $this->currencyRepository->getMainCurrency();
-        $product = $this->productRepository->getProduct($product_slug, session('currency_id', $defaultCurrency->id));
+        $product = $this->productRepository->getProduct($product_slug);
 
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
         $cart = new Cart($oldCart);

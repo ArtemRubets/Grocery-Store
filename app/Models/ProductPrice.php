@@ -10,9 +10,10 @@ class ProductPrice extends Model
     use HasFactory;
 
     protected $table = 'product_prices';
+    protected $with = 'currency';
 
     public function currency()
     {
-        return $this->hasOne(Currency::class, 'id');
+        return $this->hasOne(Currency::class, 'id', 'currency_id');
     }
 }

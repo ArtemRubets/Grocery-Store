@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\MainController;
 use App\Http\Requests\ProductRequest;
 use App\Interfaces\ICategoryRepositoryInterface;
+use App\Interfaces\ICurrencyRepositoryInterface;
 use App\Interfaces\IProductRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,13 +15,16 @@ class ProductController extends MainController
 {
     private $productRepository;
     private $categoryRepository;
+    private $currencyRepository;
 
 
     public function __construct(IProductRepositoryInterface $productRepository,
-                                ICategoryRepositoryInterface $categoryRepository,){
+                                ICategoryRepositoryInterface $categoryRepository,
+                                ICurrencyRepositoryInterface $currencyRepository){
 
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->currencyRepository = $currencyRepository;
     }
 
     /**
@@ -94,8 +98,12 @@ class ProductController extends MainController
 
         $product = $this->productRepository->getProductForDashboard($id);
 
+        $currenciesList = $this->currencyRepository->getCurrenciesList();
+
         if (View::exists('dashboard.pages.product-edit')){
-            return \view('dashboard.pages.product-edit' , compact('categories' , 'product'));
+            return \view('dashboard.pages.product-edit' , compact
+            ('categories' , 'product', 'currenciesList')
+            );
         }
         abort(404);
     }
@@ -110,6 +118,9 @@ class ProductController extends MainController
     public function update(ProductRequest $request, $id)
     {
         $inputs = $request->validated();
+//        unset($inputs['product_prices']);
+        $prices = $request->input('product_price.*');
+        $currenciesId = $request->input('currency.*');
 
         $product = $this->productRepository->find($id);
 
@@ -117,10 +128,12 @@ class ProductController extends MainController
 
         if ($inputs){
 
-            //TODO don't work in observer. Why?
+            //TODO Doesn't work in observer. Why?
             if (!isset($inputs['is_offer'])) $inputs['is_offer'] = false;
 
             $update = $product->update($inputs);
+
+
 
             if ($update) return redirect()->route('dashboard.products.index', ['category' => $product->category_id])
                 ->with('product_status' , 'Product successful update!');

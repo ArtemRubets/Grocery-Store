@@ -14,7 +14,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::user()->roles()->first()->role == 'admin' && Auth::check()) return true;
+        if (Auth::user()->roles()->first()->role === 'admin' && Auth::check()) return true;
         return false;
     }
 
@@ -29,11 +29,11 @@ class ProductRequest extends FormRequest
             'product_name' => ['required', 'min:3', 'max:50', 'string'],
             'product_image' => ['file', 'image', 'nullable'],
             'product_description' => ['nullable', 'string'],
-            'product_price' => ['required', 'numeric'],
+//            'product_price' => ['required', 'numeric'],
             'is_offer' => ['required_with:offer_percent', 'ends_with:on,off'],
             'offer_percent' => ['required_with:is_offer', 'nullable', 'integer'],
             'product_count' => ['nullable', 'integer'],
-            'category_id' => ['required', 'numeric']
+            'category_id' => ['required', 'numeric'],
         ];
     }
 

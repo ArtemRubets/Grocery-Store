@@ -61,6 +61,10 @@ class ProductObserver
             $product->product_image = $imagePath;
         }
 
+//        foreach ($product->price as $productPrice) {
+//            dd($productPrice);
+//        }
+
         $product->product_slug = $productSlug;
 
     }

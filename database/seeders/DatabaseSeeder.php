@@ -15,12 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-       Category::factory()->count(10)->create();
-       Product::factory()->count(100)->create();
+        Category::factory()->count(10)->create();
+        Product::factory()->count(100)->create();
 
-       $this->call([
-          CurrencySeeder::class,
-          PricesSeeder::class
-       ]);
+        $this->call([
+            CurrencySeeder::class,
+            PricesSeeder::class,
+            SocialNetworkSeeder::class
+        ]);
     }
 }

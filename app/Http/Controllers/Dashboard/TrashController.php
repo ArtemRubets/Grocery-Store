@@ -14,9 +14,7 @@ class TrashController extends MainController
     private $productRepository;
 
 
-    public function __construct(IProductRepositoryInterface $productRepository,
-                                ICategoryRepositoryInterface $categoryRepository,){
-        parent::__construct($categoryRepository);
+    public function __construct(IProductRepositoryInterface $productRepository){
 
         $this->productRepository = $productRepository;
     }

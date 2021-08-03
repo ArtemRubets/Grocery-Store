@@ -207,10 +207,9 @@
                                                     </div>
                                                     @enderror
                                                     <input class="billing-address-name form-control" type="number"
-                                                           name="product_price[{{ $productCurrency->currency->code }}]"
+                                                           name="product_prices[{{ $productCurrency->currency->id }}]"
                                                            placeholder="Product price"
                                                            value="{{ $productCurrency->price }}">
-                                                    <input type="hidden" name="currency[{{ $productCurrency->currency->code }}]" value="{{ $productCurrency->currency->id }}">
                                                 </div>
                                             </td>
 

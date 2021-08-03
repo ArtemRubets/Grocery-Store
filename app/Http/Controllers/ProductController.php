@@ -14,19 +14,16 @@ use Illuminate\Support\Facades\View;
 class ProductController extends MainController
 {
     private $productRepository;
-    private $currencyRepository;
 
 
-    public function __construct(IProductRepositoryInterface $productRepository, ICurrencyRepositoryInterface $currencyRepository)
+    public function __construct(IProductRepositoryInterface $productRepository)
     {
         $this->productRepository = $productRepository;
-        $this->currencyRepository = $currencyRepository;
     }
 
     public function index(Request $request, $product_slug)
     {
-        $defaultCurrency = $this->currencyRepository->getMainCurrency();
-        $product = $this->productRepository->getProduct($product_slug, session('currency_id', $defaultCurrency->id));
+        $product = $this->productRepository->getProduct($product_slug);
 
         if (View::exists('product')){
             return \view('product' , compact('product'));

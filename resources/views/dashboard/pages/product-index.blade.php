@@ -22,7 +22,6 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>Is offer</th>
-                    <th>Price</th>
                     <th>Count</th>
                     <th>Edit</th>
                     <th>Delete</th>
@@ -47,10 +46,6 @@
 
                         <td class="invert">
                             {{ $product->is_offer ? 'Yes' : 'No' }}
-                        </td>
-
-                        <td class="invert">
-                            ${{ $product->product_price }}
                         </td>
 
                         <td class="invert">

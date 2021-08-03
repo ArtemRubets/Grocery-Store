@@ -57,7 +57,14 @@ class CurrencyController extends Controller
     {
         $selectedCurrencies = $request->except(['_token', '_method']);
 
-        $destroyed = $this->currencyRepository->destroyCurrencies($selectedCurrencies);
+        if ($selectedCurrencies){
+
+            $destroyed = $this->currencyRepository->destroyCurrencies($selectedCurrencies);
+        }else{
+            return redirect()->back()
+                ->with('destroy_currency_message', 'Select minimum 1 currency')
+                ->with('flash_error', 1);
+        }
 
         if ($destroyed) {
             return redirect()->back()

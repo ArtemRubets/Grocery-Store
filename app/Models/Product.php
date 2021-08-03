@@ -24,7 +24,8 @@ class Product extends Model
 
     public function price()
     {
-        return $this->hasMany(ProductPrice::class);
+//        return $this->hasMany(ProductPrice::class);
+        return $this->belongsToMany(ProductPrice::class, 'product_prices', null, 'product_id');
     }
 
     public function isEvaluable()

@@ -18,9 +18,10 @@ class ProductController extends MainController
     private $currencyRepository;
 
 
-    public function __construct(IProductRepositoryInterface $productRepository,
+    public function __construct(IProductRepositoryInterface  $productRepository,
                                 ICategoryRepositoryInterface $categoryRepository,
-                                ICurrencyRepositoryInterface $currencyRepository){
+                                ICurrencyRepositoryInterface $currencyRepository)
+    {
 
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
@@ -37,9 +38,9 @@ class ProductController extends MainController
         $categoryId = $request->get('category');
         $category = $this->categoryRepository->find($categoryId);
 
-        $products = $this->productRepository->getCategoryProducts($category);
+        $products = $this->productRepository->getCategoryProductsForDashboard($category);
 
-        if (View::exists('dashboard.pages.product-index')){
+        if (View::exists('dashboard.pages.product-index')) {
             return \view('dashboard.pages.product-index', compact('products', 'category'));
         }
         abort(404);
@@ -53,9 +54,10 @@ class ProductController extends MainController
     public function create()
     {
         $categories = $this->categoryRepository->getCategoriesListForSelects();
+        $savedCurrencies = $this->currencyRepository->getCurrenciesList();
 
-        if (View::exists('dashboard.pages.product-create')){
-            return \view('dashboard.pages.product-create' , compact('categories'));
+        if (View::exists('dashboard.pages.product-create')) {
+            return \view('dashboard.pages.product-create', compact('categories', 'savedCurrencies'));
         }
         abort(404);
     }
@@ -63,33 +65,28 @@ class ProductController extends MainController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(ProductRequest $request)
     {
         $inputs = $request->validated();
 
-        if ($inputs){
+        $store = $this->productRepository->productStore($inputs);
 
-            if (!isset($inputs['is_offer'])) $inputs['is_offer'] = false;
+        if ($store) return redirect()->route('dashboard.products.index', ['category' => $inputs['category_id']])
+            ->with('product_status', 'Product successful create!');
+        return redirect()->route('dashboard.products.index', ['category' => $inputs['category_id']])
+            ->with('product_status', 'Error creating product!')
+            ->with('product_error', true);
 
-            $create = $this->productRepository->getModel()::create($inputs);
-
-            if ($create) return redirect()->route('dashboard.products.index', ['category' => $inputs['category_id']])
-                ->with('product_status' , 'Product successful create!');
-            return redirect()->route('dashboard.products.index', ['category' => $inputs['category_id']])
-                ->with('product_status' , 'Error creating product!')
-                ->with('product_error' , true);
-
-        }
     }
 
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit($id)
@@ -100,9 +97,9 @@ class ProductController extends MainController
 
         $currenciesList = $this->currencyRepository->getCurrenciesList();
 
-        if (View::exists('dashboard.pages.product-edit')){
-            return \view('dashboard.pages.product-edit' , compact
-            ('categories' , 'product', 'currenciesList')
+        if (View::exists('dashboard.pages.product-edit')) {
+            return \view('dashboard.pages.product-edit', compact
+                ('categories', 'product', 'currenciesList')
             );
         }
         abort(404);
@@ -111,59 +108,45 @@ class ProductController extends MainController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ProductRequest $request, $id)
     {
         $inputs = $request->validated();
-//        unset($inputs['product_prices']);
-        $prices = $request->input('product_price.*');
-        $currenciesId = $request->input('currency.*');
 
         $product = $this->productRepository->find($id);
 
-        if (!$product) abort(404);
+        $update = $this->productRepository->productUpdate($product, $inputs);
 
-        if ($inputs){
-
-            //TODO Doesn't work in observer. Why?
-            if (!isset($inputs['is_offer'])) $inputs['is_offer'] = false;
-
-            $update = $product->update($inputs);
-
-
-
-            if ($update) return redirect()->route('dashboard.products.index', ['category' => $product->category_id])
-                ->with('product_status' , 'Product successful update!');
-            return redirect()->route('dashboard.products.index', ['category' => $product->category_id])
-                ->with('product_status' , 'Error update product!')
-                ->with('product_error' , true);
-
-        }
+        if ($update) return redirect()->route('dashboard.products.index', ['category' => $product->category_id])
+            ->with('product_status', 'Product successful update!');
+        return redirect()->route('dashboard.products.index', ['category' => $product->category_id])
+            ->with('product_status', 'Error update product!')
+            ->with('product_error', true);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         $product = $this->productRepository->find($id);
 
-        if ($product){
+        if ($product) {
 
             if (!$product) return back();
 
             $delete = $product->delete();
             Storage::delete($product->product_image);
 
-            if ($delete) return back()->with('product_status' , 'Product successful delete!');
-            return back()->with('product_status' , 'Error delete product!')
-                ->with('product_error' , true);
+            if ($delete) return back()->with('product_status', 'Product successful delete!');
+            return back()->with('product_status', 'Error delete product!')
+                ->with('product_error', true);
         }
     }
 }

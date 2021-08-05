@@ -68,6 +68,11 @@
                                                                             aria-controls="show-rates"
                                                                             aria-expanded="false">Show rates</a>
                                         </li>
+                                        <li role="presentation" class=""><a href="#update-rates" role="tab"
+                                                                            id="update-rates-tab" data-toggle="tab"
+                                                                            aria-controls="update-rates"
+                                                                            aria-expanded="false">Update rates</a>
+                                        </li>
                                     </ul>
 
                                     <div id="myTabContent" class="tab-content">
@@ -228,16 +233,29 @@
                                                             </tbody>
                                                         </table>
 
-
                                                     </div>
 
                                                 </div>
 
                                         </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="update-rates"
+                                             aria-labelledby="update-rates-tab">
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>Update rates from IPI</label>
+
+                                                    <a href="{{ route('dashboard.payments.currency.updateRates') }}" class="btn btn-block btn-lg btn-warning">
+                                                        Update from API
+                                                    </a>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
 
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>

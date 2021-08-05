@@ -72,8 +72,9 @@ Route::middleware('auth')->prefix('/dashboard')->name('dashboard.')->group(funct
                 Route::get('/', [PaymentsController::class, 'index'])->name('settings');
                 Route::post('/setPaymentsSettings', [PaymentsController::class, 'setPaymentsSettings'])->name('setPaymentsSettings');
                 Route::resource('/currency', DashboardCurrencyController::class)
-                    ->only(['store', 'update'])->names('currency');
+                    ->only(['store'])->names('currency');
                 Route::delete('/currency/destroyMany', [DashboardCurrencyController::class, 'destroyMany'])->name('currency.destroyMany');
+                Route::get('/currency/update-rates', [DashboardCurrencyController::class, 'updateCurrenciesRates'])->name('currency.updateRates');
             });
 
             /*

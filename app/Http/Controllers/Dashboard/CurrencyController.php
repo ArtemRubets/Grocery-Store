@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Interfaces\ICurrencyRepositoryInterface;
 use App\Services\CurrencyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class CurrencyController extends Controller
 {
@@ -40,19 +41,6 @@ class CurrencyController extends Controller
             ->with('flash_error', 1);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-
     public function destroyMany(Request $request)
     {
         $selectedCurrencies = $request->except(['_token', '_method']);
@@ -73,5 +61,13 @@ class CurrencyController extends Controller
         return redirect()->back()
             ->with('destroy_currency_message', 'You try to delete all currencies!')
             ->with('flash_error', 1);
+    }
+
+    public function updateCurrenciesRates()
+    {
+        Artisan::call('currencies:get');
+        $output = Artisan::output();
+
+        return back()->with('currencies_update_output', $output);
     }
 }

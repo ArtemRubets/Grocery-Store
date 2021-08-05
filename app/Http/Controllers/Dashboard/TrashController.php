@@ -14,7 +14,8 @@ class TrashController extends MainController
     private $productRepository;
 
 
-    public function __construct(IProductRepositoryInterface $productRepository){
+    public function __construct(IProductRepositoryInterface $productRepository)
+    {
 
         $this->productRepository = $productRepository;
     }
@@ -24,31 +25,31 @@ class TrashController extends MainController
 
         $TrashedProducts = $this->productRepository->getTrashedProducts();
 
-        if (View::exists('dashboard.pages.products-trash')){
+        if (View::exists('dashboard.pages.products-trash')) {
             return \view('dashboard.pages.products-trash', compact('TrashedProducts'));
         }
         abort(404);
     }
 
-    public function forceDelete($id){
-        if ($id){
-            $deleted = $this->productRepository->forceDelete($id);
+    public function forceDelete($id)
+    {
+        $deleted = $this->productRepository->forceDelete($id);
 
-            if ($deleted) return redirect()->route('dashboard.trash.products.index')->with('product_status', 'Product was deleted');
-            return redirect()->route('dashboard.trash.products.index')
-                ->with('product_status' , 'Product was not deleted!')
-                ->with('product_error' , true);
-        }
+        if ($deleted) return redirect()->route('dashboard.trash.products.index')->with('product_status', 'Product was deleted');
+        return redirect()->route('dashboard.trash.products.index')
+            ->with('product_status', 'Product was not deleted!')
+            ->with('product_error', true);
     }
 
-    public function restore($id){
-        if ($id){
+    public function restore($id)
+    {
+        if ($id) {
             $restored = $this->productRepository->productRestore($id);
 
             if ($restored) return redirect()->route('dashboard.trash.products.index')->with('product_status', 'Product was restored');
             return redirect()->route('dashboard.trash.products.index')
-                ->with('product_status' , 'Product was not restored!')
-                ->with('product_error' , true);
+                ->with('product_status', 'Product was not restored!')
+                ->with('product_error', true);
         }
     }
 }

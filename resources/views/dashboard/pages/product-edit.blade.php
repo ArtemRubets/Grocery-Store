@@ -201,7 +201,7 @@
 
                                             <td class="invert">
                                                 <div class="controls">
-                                                    @error('product_price')
+                                                    @error('product_prices')
                                                     <div class="alert alert-danger" role="alert">
                                                         {{ $message }}
                                                     </div>

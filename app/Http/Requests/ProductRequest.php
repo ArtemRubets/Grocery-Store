@@ -29,6 +29,7 @@ class ProductRequest extends FormRequest
             'product_name' => ['required', 'min:3', 'max:50', 'string'],
             'product_image' => ['file', 'image', 'nullable'],
             'product_description' => ['nullable', 'string'],
+            //TODO At least one element of the array must be filled
             'product_prices' => ['nullable', 'array'],
             'is_offer' => ['required_with:offer_percent', 'ends_with:on,off'],
             'offer_percent' => ['required_with:is_offer', 'nullable', 'integer'],

@@ -31,17 +31,12 @@
                     <tr class="rem1">
                         <td class="invert">{{ $loop->iteration }}</td>
                         <td class="invert-image">
-{{-- TODO create dashboard view product page --}}
-{{--                            <a href="{{ route('good' , ['product' => $product->product_slug]) }}" target="_blank">--}}
-                                <img src="{{ \Illuminate\Support\Facades\Storage::url($product->product_image)}}" alt=""
-                                     class="img-responsive">
-{{--                            </a>--}}
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($product->product_image)}}" alt=""
+                                 class="img-responsive">
                         </td>
 
                         <td class="invert">
-{{--                            <a href="{{ route('good' , ['product' => $product->product_slug]) }}" target="_blank">--}}
-                                {{ $product->product_name }}
-{{--                            </a>--}}
+                            {{ $product->product_name }}
                         </td>
 
                         <td class="invert">
@@ -60,8 +55,9 @@
 
                         <td class="invert">
                             <div class="rem">
-                                <form action="{{ route('dashboard.trash.products.forceDelete' , ['id' => $product->id]) }}"
-                                      method="post">
+                                <form
+                                    action="{{ route('dashboard.trash.products.forceDelete' , ['id' => $product->id]) }}"
+                                    method="post">
                                     @csrf
                                     @method('delete')
                                     <button class="close1" type="submit"></button>

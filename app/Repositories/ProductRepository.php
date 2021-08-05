@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Interfaces\IProductRepositoryInterface;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 class ProductRepository extends CoreRepository implements IProductRepositoryInterface
 {
@@ -22,16 +23,17 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         foreach ($categoryProducts as $product){
 
             $price = $this->getPrice($product);
-            $product->product_price = $price;
 
-            if ($product->is_offer){
-                $priceWithOffer = round($product->product_price - ( $product->product_price * $product->offer_percent / 100 ), 2);
+                $product->product_price = $price;
 
-                $product->product_price_with_offer = $priceWithOffer;
-            }
+                if ($product->is_offer){
+                    $priceWithOffer = round($product->product_price - ( $product->product_price * $product->offer_percent / 100 ), 2);
+
+                    $product->product_price_with_offer = $priceWithOffer;
+                }
         }
 
-        return $categoryProducts;
+        return $price ? $categoryProducts : $categoryProducts->except($product->id);
     }
 
     public function getCategoryProductsForDashboard($category){
@@ -78,7 +80,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
     }
 
     public function productRestore($id){
-        return $this->startCondition()->withTrashed()->where('id', $id)->restore();
+        return $this->startCondition()->productTrashed($id)->firstOrFail()->restore();
     }
 
     public function productUpdate($product, $validatedInputs)
@@ -124,7 +126,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
             foreach ($product_prices as $currencyId => $product_price){
 
-                $storeProduct->price()->attach([$storeProduct->id], ['currency_id' => $currencyId, 'price' => $product_price]);
+                $storeProduct->productPrices()->attach([$storeProduct->id], ['currency_id' => $currencyId, 'price' => $product_price]);
 
             }
 
@@ -134,13 +136,20 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
     }
 
     public function forceDelete($id){
-        return $this->startCondition()->withTrashed()->where('id', $id)->forceDelete();
+
+        $product = $this->startCondition()->productTrashed($id)->firstOrFail();
+
+        Storage::delete($product->product_image);
+
+        $product->productPrices()->detach();
+
+        return $product->forceDelete();
     }
 
     public function getPrice($product)
     {
         $price = $product->price;
 
-       return $price->where('currency_id', session('currency')->id)->first()->price;
+        return $price->where('currency_id', session('currency')->id)->first()->price;
     }
 }

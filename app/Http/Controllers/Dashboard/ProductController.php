@@ -8,7 +8,6 @@ use App\Interfaces\ICategoryRepositoryInterface;
 use App\Interfaces\ICurrencyRepositoryInterface;
 use App\Interfaces\IProductRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class ProductController extends MainController
@@ -137,16 +136,12 @@ class ProductController extends MainController
     {
         $product = $this->productRepository->find($id);
 
-        if ($product) {
+        if (!$product) return back();
 
-            if (!$product) return back();
+        $delete = $product->delete();
 
-            $delete = $product->delete();
-            Storage::delete($product->product_image);
-
-            if ($delete) return back()->with('product_status', 'Product successful delete!');
-            return back()->with('product_status', 'Error delete product!')
-                ->with('product_error', true);
-        }
+        if ($delete) return back()->with('product_status', 'Product successful delete!');
+        return back()->with('product_status', 'Error delete product!')
+            ->with('product_error', true);
     }
 }

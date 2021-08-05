@@ -24,12 +24,22 @@ class Product extends Model
 
     public function price()
     {
-//        return $this->hasMany(ProductPrice::class);
+        return $this->hasMany(ProductPrice::class);
+    }
+
+    //TODO opportunity to fix
+    public function productPrices()
+    {
         return $this->belongsToMany(ProductPrice::class, 'product_prices', null, 'product_id');
     }
 
     public function isEvaluable()
     {
         return $this->product_count > 0;
+    }
+
+    public function scopeProductTrashed($query, $id)
+    {
+        return $query->onlyTrashed()->where('id', $id);
     }
 }

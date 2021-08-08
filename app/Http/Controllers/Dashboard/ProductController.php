@@ -35,7 +35,7 @@ class ProductController extends MainController
     public function index(Request $request)
     {
         $categoryId = $request->get('category');
-        $category = $this->categoryRepository->find($categoryId);
+        $category = $this->categoryRepository->findForProducts($categoryId);
 
         $products = $this->productRepository->getCategoryProductsForDashboard($category);
 
@@ -94,12 +94,8 @@ class ProductController extends MainController
 
         $product = $this->productRepository->getProductForDashboard($id);
 
-        $currenciesList = $this->currencyRepository->getCurrenciesList();
-
         if (View::exists('dashboard.pages.product-edit')) {
-            return \view('dashboard.pages.product-edit', compact
-                ('categories', 'product', 'currenciesList')
-            );
+            return \view('dashboard.pages.product-edit', compact('categories', 'product'));
         }
         abort(404);
     }
@@ -135,8 +131,6 @@ class ProductController extends MainController
     public function destroy($id)
     {
         $product = $this->productRepository->find($id);
-
-        if (!$product) return back();
 
         $delete = $product->delete();
 

@@ -22,4 +22,11 @@ interface ICategoryRepositoryInterface
 
     public function find($id);
 
+    public function findForProducts($id);
+
+    public function getWithoutCategory();
+
+    public function categoryDelete($category);
+
+    public function categoryCreate($inputs);
 }

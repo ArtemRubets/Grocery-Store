@@ -12,6 +12,17 @@
             </div>
         @endif
 
+        @if(count($getWithoutCategory->products) > 0)
+            <div class="wrap">
+                <div class="alert alert-warning" role="alert">
+                    Warning. <b>
+                        {{ count($getWithoutCategory->products) }} @if(count($getWithoutCategory->products) > 1)products @else product @endif
+                    </b> without category.
+                    <a href="{{ route('dashboard.products.index', ['category' => $getWithoutCategory]) }}">See more</a>
+                </div>
+            </div>
+        @endif
+
         <table class="timetable_sub">
             <thead>
             <tr>

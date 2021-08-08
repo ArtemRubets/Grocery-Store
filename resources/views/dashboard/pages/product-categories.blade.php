@@ -4,13 +4,16 @@
         <h3 class="dashboard-titles" style="margin: 20px 0">Product Categories</h3>
         <div class="row">
             <div class="col-md-9">
-                <a class="btn btn-success btn-lg btn-block" style="margin-bottom: 20px" href="{{ route('dashboard.products.create') }}">Add new product</a>
+                <a class="btn btn-success btn-lg btn-block" style="margin-bottom: 20px"
+                   href="{{ route('dashboard.products.create') }}">Add new product</a>
             </div>
             <div class="col-md-2 col-md-offset-1">
-                <a class="btn btn-success btn-lg btn-block" style="margin-bottom: 20px;" href="{{ route('dashboard.trash.products.index') }}">
+                <a class="btn btn-success btn-lg btn-block" style="margin-bottom: 20px;"
+                   href="{{ route('dashboard.trash.products.index') }}">
                     <i class="fa fa-trash-o" style="margin-right: 10px; font-size: 40px;vertical-align: middle"></i>Trash</a>
             </div>
         </div>
+
         @if(session('product_status'))
             <div class="alert @if(session('product_error'))alert-danger @else alert-success @endif alert-dismissible"
                  role="alert">

@@ -21,4 +21,9 @@ class Category extends Model
         return $this->hasMany(Category::class , 'parent_category');
     }
 
+    public function scopeExcerptWithoutCategory($query)
+    {
+        return $query->where('category_slug', '<>', 'without-category');
+    }
+
 }

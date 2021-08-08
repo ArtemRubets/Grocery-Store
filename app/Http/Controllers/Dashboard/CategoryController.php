@@ -5,18 +5,18 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryFormRequest;
 use App\Interfaces\ICategoryRepositoryInterface;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
 
     private $categoryRepository;
 
-    public function __construct(ICategoryRepositoryInterface $categoryRepository){
+    public function __construct(ICategoryRepositoryInterface $categoryRepository)
+    {
         $this->categoryRepository = $categoryRepository;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,9 +25,10 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = $this->categoryRepository->getCategoriesListForCategories();
+        $getWithoutCategory = $this->categoryRepository->getWithoutCategory();
 
-        if (View::exists('dashboard.pages.category-index')){
-            return \view('dashboard.pages.category-index' , compact('categories'));
+        if (View::exists('dashboard.pages.category-index')) {
+            return \view('dashboard.pages.category-index', compact('categories', 'getWithoutCategory'));
         }
         abort(404);
     }
@@ -37,8 +38,8 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryRepository->getCategoriesListForProductCategories();
 
-        if (View::exists('dashboard.pages.product-categories')){
-            return \view('dashboard.pages.product-categories' , compact('categories'));
+        if (View::exists('dashboard.pages.product-categories')) {
+            return \view('dashboard.pages.product-categories', compact('categories'));
         }
         abort(404);
     }
@@ -52,8 +53,8 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryRepository->getCategoriesListForCategories();
 
-        if (View::exists('dashboard.pages.category-create')){
-            return \view('dashboard.pages.category-create' , compact('categories'));
+        if (View::exists('dashboard.pages.category-create')) {
+            return \view('dashboard.pages.category-create', compact('categories'));
         }
         abort(404);
     }
@@ -61,35 +62,24 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(CategoryFormRequest $request)
     {
-        $validated = $request->validated();
+        $validatedInputs = $request->validated();
 
-        if ($validated){
+        $categoryCreate = $this->categoryRepository->categoryCreate($validatedInputs);
 
-            if (isset($validated['category_image'])){
-
-                $extension = $validated['category_image']->extension();
-                $imagePath = $validated['category_image']->storeAs('categories' , Str::slug($validated['category_name']).'.'.$extension);
-
-                $validated['category_image'] = $imagePath;
-            }
-
-            $newCat = $this->categoryRepository->getModel()::create($validated);
-
-            if ($newCat) return redirect()->route('dashboard.categories.index')->with('category_status' , 'Category successful created!');
-            return redirect()->route('dashboard.categories.index')->with('category_status' , 'Error create category!')
-                ->with('category_error' , true);
-        }
+        if ($categoryCreate) return redirect()->route('dashboard.categories.index')->with('category_status', 'Category successful created!');
+        return redirect()->route('dashboard.categories.index')->with('category_status', 'Error create category!')
+            ->with('category_error', true);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit($id)
@@ -97,8 +87,8 @@ class CategoryController extends Controller
         $category = $this->categoryRepository->find($id);
         $categories = $this->categoryRepository->getCategoriesListForCategories();
 
-        if (View::exists('dashboard.pages.category-edit')){
-            return \view('dashboard.pages.category-edit' , compact('category' , 'categories'));
+        if (View::exists('dashboard.pages.category-edit')) {
+            return \view('dashboard.pages.category-edit', compact('category', 'categories'));
         }
         abort(404);
     }
@@ -106,43 +96,37 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(CategoryFormRequest $request, $id)
     {
         $category = $this->categoryRepository->find($id);
-        if (!$category) abort(404);
 
         $validated = $request->validated();
 
-        if ($validated){
+        $update = $category->update($validated);
 
-            $update = $category->update($validated);
-
-            if ($update) return redirect()->route('dashboard.categories.index' , ['category' => $id])->with('category_status' , 'Category successful update!');
-            return redirect()->route('dashboard.categories.edit' , ['category' => $category->id])->with('category_status' , 'Error update category!')
-                ->with('category_error' , true);
-        }
+        if ($update) return redirect()->route('dashboard.categories.index', ['category' => $id])->with('category_status', 'Category successful update!');
+        return redirect()->route('dashboard.categories.edit', ['category' => $category->id])->with('category_status', 'Error update category!')
+            ->with('category_error', true);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         $category = $this->categoryRepository->find($id);
-        if (!$category) return back();
 
-        $delete = $category->delete();
-        Storage::delete($category->category_image);
+        $delete = $this->categoryRepository->categoryDelete($category);
 
-        if ($delete) return back()->with('category_status' , 'Category successful delete!');
-        return back()->with('category_status' , 'Error delete category!')
-            ->with('category_error' , true);
+        if ($delete) return back()->with('category_status', 'Category successful delete!');
+        return back()->with('category_status', 'Error delete category!')
+            ->with('category_error', true);
     }
 }

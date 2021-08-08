@@ -31,7 +31,6 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
             return $currency;
         }
-
         return false;
     }
 
@@ -64,7 +63,7 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
         $currenciesNew = CurrencyService::getAvailableCurrencies();
 
         $currentRates = $currenciesNew->filter(function ($item) use ($currenciesOld) {
-            foreach ($currenciesOld as $key => $value) {
+            foreach ($currenciesOld as $value) {
                 if ($value->code == $item->cc) {
                     return $item;
                 }

@@ -20,9 +20,11 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
             ->orderBy('created_at')
             ->orderBy('product_count', 'desc')->get();
 
-        foreach ($categoryProducts as $product){
+        if (count($categoryProducts) > 0){
 
-            $price = $this->getPrice($product);
+            foreach ($categoryProducts as $product){
+
+                $price = $this->getPrice($product);
 
                 $product->product_price = $price;
 
@@ -31,9 +33,12 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
                     $product->product_price_with_offer = $priceWithOffer;
                 }
+            }
+
+            return $price ? $categoryProducts : $categoryProducts->except($product->id);
         }
 
-        return $price ? $categoryProducts : $categoryProducts->except($product->id);
+        return $categoryProducts;
     }
 
     public function getCategoryProductsForDashboard($category){
@@ -92,8 +97,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
             unset($validatedInputs['product_prices']);
 
             //TODO Doesn't work in observer. Why?
-            if (!isset($validatedInputs['is_offer'])) $validatedInputs['is_offer'] = false;
-
+            $validatedInputs['is_offer'] = $validatedInputs['is_offer'] ?? false;
 
             foreach ($product_prices as $currencyId => $product_price){
 
@@ -109,7 +113,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
             }
 
         }
-        return ($product->update($validatedInputs) && $save) === true ? true : false;
+        return ($product->update($validatedInputs) && $save) ?? false;
     }
 
     public function productStore($validatedInputs)
@@ -120,19 +124,17 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
             $product_prices = $validatedInputs['product_prices'];
             unset($validatedInputs['product_prices']);
 
-            if (!isset($validatedInputs['is_offer'])) $validatedInputs['is_offer'] = false;
+            $validatedInputs['is_offer'] = $validatedInputs['is_offer'] ?? false;
 
             $storeProduct = $this->startCondition()->create($validatedInputs);
 
             foreach ($product_prices as $currencyId => $product_price){
 
                 $storeProduct->productPrices()->attach([$storeProduct->id], ['currency_id' => $currencyId, 'price' => $product_price]);
-
             }
 
             return $storeProduct ?? true;
         }
-
     }
 
     public function forceDelete($id){

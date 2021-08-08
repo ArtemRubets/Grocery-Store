@@ -22,7 +22,7 @@ class CurrencyService
 
         if ($currenciesList){
             $availableCurrenciesFiltered = $availableCurrencies->reject(function ($item) use ($currenciesList) {
-                foreach ($currenciesList as $key => $value) {
+                foreach ($currenciesList as $value) {
                     if ($value->code == $item->cc) {
                         return $item;
                     }
@@ -66,7 +66,7 @@ class CurrencyService
 
         return $collect->reject(function ($item) use ($exceptions){
 
-            foreach ($exceptions as $key => $value){
+            foreach ($exceptions as $value){
                 if ($item->cc == $value) return $item;
             }
 

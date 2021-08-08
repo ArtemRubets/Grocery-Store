@@ -135,7 +135,7 @@
                                             @enderror
                                             <input class="billing-address-name form-control" type="number"
                                                    name="product_count"
-                                                   placeholder="Product Count" value="{{ old('product_count') }}">
+                                                   placeholder="Product Count" value="{{ old('product_count', 0) }}">
                                         </td>
 
                                     </tr>

@@ -8,7 +8,16 @@ use Illuminate\Support\Str;
 class CategoryObserver
 {
     public function creating(Category $category){
-        $category->category_slug = Str::slug($category->category_name);
+
+        $categorySlug = Str::slug($category->category_name);
+        $category->category_slug = $categorySlug;
+
+        if (request()->hasFile('category_image')) {
+            $extension = request()->file('category_image')->extension();
+            $imagePath = request()->file('category_image')->storeAs('categories', $categorySlug . '.' . $extension);
+
+            $category->category_image = $imagePath;
+        }
     }
 
     public function updating(Category $category){

@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
         Product::factory()->count(100)->create();
 
         $this->call([
+            //TODO Temporary solution
+            WithoutCategorySeeder::class,
             CurrencySeeder::class,
             PricesSeeder::class,
             SocialNetworkSeeder::class

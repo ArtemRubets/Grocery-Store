@@ -17,12 +17,11 @@ class ManagementRoles
      */
     public function handle(Request $request, Closure $next)
     {
-        $role = session('user_role');
+        $user = Auth::user();
+        $userRole = $user->roles->first()->role;
 
-        if ($role === 'admin' || $role === 'manager'){
+        if ($userRole === 'admin' || $userRole === 'manager'){
             return $next($request);
         }
-
-        return redirect()->back();
     }
 }

@@ -109,6 +109,10 @@ Route::prefix('/auth')->group(function () {
     Route::get('/', [AuthController::class, 'index'])->name('auth');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+    Route::get('/login/google', [AuthController::class, 'googleLogin'])->name('google-login');
+    Route::get('/login/google/redirect', [AuthController::class, 'googleRedirect'])->name('google-redirect');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 /*

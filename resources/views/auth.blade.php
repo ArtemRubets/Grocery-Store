@@ -38,6 +38,13 @@
                             <input type="password" name="password" placeholder="Password">
                             <input type="submit" value="Login">
                         </form>
+
+                        <a href="{{ route('google-login') }}" class="google-btn">
+                            <div class="google-icon-wrapper">
+                                <img class="google-icon" src="{{ asset('images/Google__G__Logo.svg') }}"/>
+                            </div>
+                            <p class="btn-text"><b>Sign in with google</b></p>
+                        </a>
                     </div>
                     <div class="form">
                         <h2>Create an account</h2>

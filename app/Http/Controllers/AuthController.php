@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Auth\LoginWith;
 use App\Http\Requests\RegisterFormRequest;
-use App\Interfaces\ICategoryRepositoryInterface;
+use App\Interfaces\IUserRepositoryInterface;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
-use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends MainController
 {
+
+    private $userRepository;
+
+    public function __construct(IUserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     public function register(RegisterFormRequest $request)
     {
@@ -82,44 +89,24 @@ class AuthController extends MainController
         abort(404);
     }
 
-    public function googleLogin()
+    public function loginWith($company)
     {
-        return Socialite::driver('google')->redirect();
+        return (new LoginWith($company))->loginRequest();
     }
 
-    public function googleRedirect()
+    public function loginWithRedirect($company = 'facebook')
     {
-        try {
-            $googleUser = Socialite::driver('google')->user();
+        //TODO Facebook doesn't work without SSL
+        $serviceUserData = (new LoginWith($company))->getUserData();
 
-            if ($googleUser) {
+        $user = $this->userRepository->firstOrCreateUser($serviceUserData);
 
-                $user = User::whereEmail($googleUser->getEmail())->first();
+        Auth::login($user);
 
-                if (!$user) {
-                    User::create([
-                        'email' => $googleUser->getEmail(),
-                        'name' => $googleUser->user['given_name'],
-                        'password' => \Hash::make(\Str::random()),
-                        //TODO phone is not required. Fix
-                        'phone' => '+380372888849'
-                    ]);
+        session(['user_name' => $user->name]);
+        session(['user_role' => $user->roles->first()->role]);
 
-                    $role = Role::where('role', 'guest')->first();
-                    $user->roles()->attach($role);
-                }
-
-                Auth::login($user);
-
-                session(['user_name' => $user->name]);
-                session(['user_role' => $user->roles->first()->role]);
-            }
-            return redirect()->intended(route('dashboard.home'));
-
-        } catch (\Exception $exception) {
-            return $exception->getMessage();
-        }
-
+        return redirect()->intended(route('dashboard.home'));
     }
 
 }

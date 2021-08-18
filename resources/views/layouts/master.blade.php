@@ -60,10 +60,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <a href="products.html">Today's special Offers !</a>
     </div>
     <div class="w3l_search">
-        <form action="#" method="post">
-            <input type="text" name="Product" value="Search a product..." onfocus="this.value = '';"
-                   onblur="if (this.value == '') {this.value = 'Search a product...';}" required="">
-            <input type="submit" value=" ">
+        <form action="{{ route('products-search') }}" method="get">
+            @csrf
+            <input type="text" value="{{ request()->query('product_search') }}" name="product_search" placeholder="Search a product..." required>
+            <input type="submit" value="">
         </form>
     </div>
     <div class="product_list_header">

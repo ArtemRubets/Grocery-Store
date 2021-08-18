@@ -4,7 +4,7 @@ namespace App\Auth;
 
 use Laravel\Socialite\Facades\Socialite;
 
-class LoginWith
+class SocialiteLogin
 {
     private $company;
 

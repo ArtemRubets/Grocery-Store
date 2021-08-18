@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Interfaces\IProductRepositoryInterface;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class ProductRepository extends CoreRepository implements IProductRepositoryInterface
@@ -20,25 +21,8 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
             ->orderBy('created_at')
             ->orderBy('product_count', 'desc')->get();
 
-        if (count($categoryProducts) > 0){
+        return $this->getProductsWithPrices($categoryProducts);
 
-            foreach ($categoryProducts as $product){
-
-                $price = $this->getPrice($product);
-
-                $product->product_price = $price;
-
-                if ($product->is_offer){
-                    $priceWithOffer = round($product->product_price - ( $product->product_price * $product->offer_percent / 100 ), 2);
-
-                    $product->product_price_with_offer = $priceWithOffer;
-                }
-            }
-
-            return $price ? $categoryProducts : $categoryProducts->except($product->id);
-        }
-
-        return $categoryProducts;
     }
 
     public function getCategoryProductsForDashboard($category){
@@ -109,9 +93,7 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
                         $save = $productPriceModel->save();
                     }
                 }
-
             }
-
         }
         return ($product->update($validatedInputs) && $save) ?? false;
     }
@@ -153,5 +135,32 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         $price = $product->price;
 
         return $price->where('currency_id', session('currency')->id)->first()->price;
+    }
+
+    public function searchProducts($searchQuery)
+    {
+       $foundProducts = $this->startCondition()->with('price')->where('product_name', 'like', "%$searchQuery%")->get();
+
+        return $this->getProductsWithPrices($foundProducts);
+    }
+
+    protected function getProductsWithPrices(Collection $products)
+    {
+        if (count($products) > 0){
+
+            foreach ($products as $product){
+
+                $price = $this->getPrice($product);
+
+                $product->product_price = $price;
+
+                if ($product->is_offer){
+                    $priceWithOffer = round($product->product_price - ( $product->product_price * $product->offer_percent / 100 ), 2);
+
+                    $product->product_price_with_offer = $priceWithOffer;
+                }
+            }
+            return $price ? $products : $products->except($product->id);
+        }
     }
 }

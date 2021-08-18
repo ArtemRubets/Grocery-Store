@@ -26,7 +26,7 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(ICategoryRepositoryInterface $categoryRepository, ICurrencyRepositoryInterface $currencyRepository)
     {
-        View::composer(['index', 'cart', 'category', 'product', 'auth'], function ($view) use ($currencyRepository, $categoryRepository) {
+        View::composer(['index', 'cart', 'category', 'product', 'auth', 'search'], function ($view) use ($currencyRepository, $categoryRepository) {
             $view->with('categoriesList', $categoryRepository->getCategoriesList())
             ->with('viewName', $view->getName())
             ->with('currency', session('currency', $currencyRepository->getMainCurrency()));

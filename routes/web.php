@@ -118,7 +118,9 @@ Route::prefix('/auth')->group(function () {
 /*
  * Clients Routes
  * */
+Route::get('/product-search', [ProductController::class, 'productsSearch'])->name('products-search');
 Route::get('/{product}', [ProductController::class, 'index'])->name('good');
+
 Route::get('/category/{category_name}', [CategoryController::class, 'index'])->name('category');
 Route::post('/subscription/{product}', [ProductController::class, 'subscription'])->name('subscription');
 Route::get('/change-currency/{code}', [CurrencyController::class, 'changeCurrency'])->name('changeCurrency');

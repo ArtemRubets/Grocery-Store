@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use function React\Promise\reduce;
 
 class ProductController extends MainController
 {
@@ -21,7 +22,7 @@ class ProductController extends MainController
         $this->productRepository = $productRepository;
     }
 
-    public function index(Request $request, $product_slug)
+    public function index($product_slug)
     {
         $product = $this->productRepository->getProduct($product_slug);
 
@@ -43,5 +44,19 @@ class ProductController extends MainController
 
           return back()->with('status', 'We are subscribe');
        }
+    }
+
+    public function productsSearch(Request $request)
+    {
+        $productName = $request->input('product_search');
+
+        if ($productName){
+            $productsFound = $this->productRepository->searchProducts($productName);
+        }
+        if (View::exists('search') && isset($productsFound)){
+            return \view('search', compact('productsFound'));
+        }
+
+        return redirect()->back();
     }
 }

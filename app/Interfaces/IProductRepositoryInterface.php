@@ -4,6 +4,8 @@
 namespace App\Interfaces;
 
 
+use Illuminate\Database\Eloquent\Collection;
+
 interface IProductRepositoryInterface
 {
 
@@ -30,4 +32,6 @@ interface IProductRepositoryInterface
     public function forceDelete($id);
 
     public function getPrice($product);
+
+    public function searchProducts($searchQuery);
 }

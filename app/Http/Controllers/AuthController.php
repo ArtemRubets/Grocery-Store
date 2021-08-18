@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Auth\LoginWith;
+use App\Auth\SocialiteLogin;
 use App\Http\Requests\RegisterFormRequest;
 use App\Interfaces\IUserRepositoryInterface;
 use App\Models\Role;
@@ -91,13 +91,13 @@ class AuthController extends MainController
 
     public function loginWith($company)
     {
-        return (new LoginWith($company))->loginRequest();
+        return (new SocialiteLogin($company))->loginRequest();
     }
 
     public function loginWithRedirect($company = 'facebook')
     {
         //TODO Facebook doesn't work without SSL
-        $serviceUserData = (new LoginWith($company))->getUserData();
+        $serviceUserData = (new SocialiteLogin($company))->getUserData();
 
         $user = $this->userRepository->firstOrCreateUser($serviceUserData);
 

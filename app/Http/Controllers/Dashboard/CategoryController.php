@@ -85,7 +85,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = $this->categoryRepository->find($id);
-        $categories = $this->categoryRepository->getCategoriesListForCategories();
+        $categories = $this->categoryRepository->getCategoriesListForSelects();
 
         if (View::exists('dashboard.pages.category-edit')) {
             return \view('dashboard.pages.category-edit', compact('category', 'categories'));

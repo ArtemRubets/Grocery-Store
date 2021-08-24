@@ -37,7 +37,9 @@ class CategoryRepository extends CoreRepository implements ICategoryRepositoryIn
     }
 
     public function getCategory($category_slug){
-        return $this->startCondition()->where('category_slug' , $category_slug)->excerptWithoutCategory()->firstOrFail();
+        return $this->startCondition()->where('category_slug' , $category_slug)
+            ->excerptWithoutCategory()
+            ->firstOrFail(['id', 'category_name', 'category_image', 'category_slug', 'category_description']);
     }
 
     public function find($id){
@@ -50,7 +52,7 @@ class CategoryRepository extends CoreRepository implements ICategoryRepositoryIn
 
     public function getWithoutCategory()
     {
-        return $this->startCondition()->firstWhere('category_slug', 'without-category');
+        return $this->startCondition()->where('category_slug', 'without-category')->first('id', 'category_slug');
     }
 
     public function categoryDelete($category)

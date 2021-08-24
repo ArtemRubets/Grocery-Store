@@ -14,7 +14,7 @@ class Product extends Model
     public $guarded = [];
 
     public function category(){
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->select(['id', 'category_name', 'category_slug']);
     }
 
     public function setIsOfferAttribute($value)
@@ -24,7 +24,7 @@ class Product extends Model
 
     public function price()
     {
-        return $this->hasMany(ProductPrice::class);
+        return $this->hasMany(ProductPrice::class)->select(['price', 'product_id', 'currency_id']);
     }
 
     //TODO opportunity to fix

@@ -18,7 +18,8 @@ class Category extends Model
 
     public function child()
     {
-        return $this->hasMany(Category::class , 'parent_category');
+        return $this->hasMany(Category::class , 'parent_category')
+            ->select(['id', 'category_name', 'category_slug', 'parent_category']);
     }
 
     public function scopeExcerptWithoutCategory($query)

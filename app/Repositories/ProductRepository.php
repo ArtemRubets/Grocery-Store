@@ -19,7 +19,8 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
         $categoryProducts = $this->startCondition()->with('price')->where('category_id', $category->id)
             ->orderBy('created_at')
-            ->orderBy('product_count', 'desc')->get();
+            ->orderBy('product_count', 'desc')
+            ->get(['id', 'category_id', 'product_name', 'product_slug', 'product_image', 'is_offer', 'offer_percent', 'product_count']);
 
         return $this->getProductsWithPrices($categoryProducts);
 
@@ -29,14 +30,17 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
         $categoryProducts = $this->startCondition()->where('category_id', $category->id)
             ->orderBy('created_at')
-            ->orderBy('product_count', 'desc')->get();
-
+            ->orderBy('product_count', 'desc')
+            ->get(['id', 'category_id', 'product_name', 'product_slug', 'product_image', 'is_offer', 'product_count', 'deleted_at']);
         return $categoryProducts;
     }
 
     public function getProduct($product_slug){
         $product = $this->startCondition()->where('product_slug' , $product_slug)
-            ->firstOrFail();
+            ->firstOrFail([
+                'id', 'category_id', 'product_name', 'product_slug', 'product_image', 'product_description', 'rating',
+                'is_offer', 'offer_percent', 'product_count', 'deleted_at'
+            ]);
 
         $price = $this->getPrice($product);
 

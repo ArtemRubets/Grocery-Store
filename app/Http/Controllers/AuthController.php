@@ -18,7 +18,6 @@ class AuthController extends MainController
 
     private $userRepository;
 
-    protected $user;
     protected $authFactory;
 
     public function __construct(IUserRepositoryInterface $userRepository)
@@ -67,13 +66,10 @@ class AuthController extends MainController
 
             if ($response instanceof RedirectResponse) return $response;
 
-            $this->user = Auth::user();
         }else{
             if ($company && $redirect){
                 $socialiteFactory = $this->authFactory->socialiteFactory();
                 $socialiteFactory->build($company)->login($this->userRepository);
-
-                $this->user = Auth::user();
 
             }else{
                 $socialiteFactory = $this->authFactory->socialiteFactory();
@@ -82,8 +78,8 @@ class AuthController extends MainController
             }
         }
 
-        session(['user_name' => $this->user->name]);
-        session(['user_role' => $this->user->roles->first()->role]);
+        session(['user_name' => Auth::user()->name]);
+        session(['user_role' => Auth::user()->roles->first()->role]);
 
         return redirect()->intended(route('dashboard.home'));
 

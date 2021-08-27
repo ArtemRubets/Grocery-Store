@@ -24,7 +24,7 @@ class Product extends Model
 
     public function price()
     {
-        return $this->hasMany(ProductPrice::class)->select(['price', 'product_id', 'currency_id']);
+        return $this->hasMany(ProductPrice::class)->select(['id','price', 'product_id', 'currency_id']);
     }
 
     //TODO opportunity to fix

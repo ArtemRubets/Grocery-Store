@@ -201,13 +201,13 @@
 
                                             <td class="invert">
                                                 <div class="controls">
-                                                    @error('product_prices')
+                                                    @error('product_prices.*.price')
                                                     <div class="alert alert-danger" role="alert">
                                                         {{ $message }}
                                                     </div>
                                                     @enderror
-                                                    <input class="billing-address-name form-control" type="number"
-                                                           name="product_prices[{{ $productCurrency->currency->id }}]"
+                                                    <input class="billing-address-name form-control" type="text"
+                                                           name="product_prices[{{ $productCurrency->currency->id }}][price]"
                                                            placeholder="Product price"
                                                            value="{{ $productCurrency->price }}">
                                                 </div>

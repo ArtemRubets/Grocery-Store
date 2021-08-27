@@ -36,7 +36,8 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
     public function getCurrenciesList()
     {
-        return $this->startCondition()->get(['id', 'code', 'symbol', 'rate', 'status', 'updated_at']);
+        $columns = ['id', 'code', 'symbol', 'rate', 'status', 'updated_at'];
+        return $this->startCondition()->get($columns);
     }
 
     public function getCurrencyByCode($currencyCode)
@@ -107,6 +108,7 @@ class CurrencyRepository extends CoreRepository implements ICurrencyRepositoryIn
 
     public function getMainCurrency()
     {
-        return $this->startCondition()->where('status', 1)->firstOrFail(['id', 'code', 'symbol']);
+        $columns = ['id', 'code', 'symbol'];
+        return $this->startCondition()->where('status', 1)->firstOrFail($columns);
     }
 }

@@ -16,31 +16,31 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
     }
 
     public function getCategoryProducts($category){
+        $columns = ['id', 'category_id', 'product_name', 'product_slug', 'product_image', 'is_offer', 'offer_percent', 'product_count'];
 
-        $categoryProducts = $this->startCondition()->with('price')->where('category_id', $category->id)
-            ->orderBy('created_at')
-            ->orderBy('product_count', 'desc')
-            ->get(['id', 'category_id', 'product_name', 'product_slug', 'product_image', 'is_offer', 'offer_percent', 'product_count']);
+       $categoryProducts = $this->startCondition()->with('price')->where('category_id', $category->id)
+            ->orderBy('created_at')->orderBy('product_count', 'desc')->get($columns);
 
         return $this->getProductsWithPrices($categoryProducts);
-
     }
 
     public function getCategoryProductsForDashboard($category){
+        $columns = ['id', 'category_id', 'product_name', 'product_slug', 'product_image', 'is_offer', 'product_count', 'deleted_at'];
 
         $categoryProducts = $this->startCondition()->where('category_id', $category->id)
-            ->orderBy('created_at')
-            ->orderBy('product_count', 'desc')
-            ->get(['id', 'category_id', 'product_name', 'product_slug', 'product_image', 'is_offer', 'product_count', 'deleted_at']);
+            ->orderBy('created_at')->orderBy('product_count', 'desc')->get($columns);
+
         return $categoryProducts;
     }
 
     public function getProduct($product_slug){
+        $columns = [
+            'id', 'category_id', 'product_name', 'product_slug', 'product_image', 'product_description', 'rating',
+            'is_offer', 'offer_percent', 'product_count', 'deleted_at'
+        ];
+
         $product = $this->startCondition()->where('product_slug' , $product_slug)
-            ->firstOrFail([
-                'id', 'category_id', 'product_name', 'product_slug', 'product_image', 'product_description', 'rating',
-                'is_offer', 'offer_percent', 'product_count', 'deleted_at'
-            ]);
+            ->firstOrFail($columns);
 
         $price = $this->getPrice($product);
 
@@ -93,13 +93,13 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
                     if ($productPriceModel->currency_id == $currencyId){
 
-                        $productPriceModel->price = $product_price;
-                        $save = $productPriceModel->save();
+                        $productPriceModel->price = round($product_price['price'], 2);
+                        $productPriceModel->save();
                     }
                 }
             }
         }
-        return ($product->update($validatedInputs) && $save) ?? false;
+        return $product->update($validatedInputs);
     }
 
     public function productStore($validatedInputs)
@@ -116,7 +116,8 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
 
             foreach ($product_prices as $currencyId => $product_price){
 
-                $storeProduct->productPrices()->attach([$storeProduct->id], ['currency_id' => $currencyId, 'price' => $product_price]);
+                $storeProduct->productPrices()
+                    ->attach([$storeProduct->id], ['currency_id' => $currencyId, 'price' => round($product_price['price'], 2)]);
             }
 
             return $storeProduct ?? true;
@@ -153,7 +154,6 @@ class ProductRepository extends CoreRepository implements IProductRepositoryInte
         if (count($products) > 0){
 
             foreach ($products as $product){
-
                 $price = $this->getPrice($product);
 
                 $product->product_price = $price;

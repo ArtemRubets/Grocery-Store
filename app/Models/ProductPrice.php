@@ -15,6 +15,6 @@ class ProductPrice extends Model
     public function currency()
     {
         return $this->hasOne(Currency::class, 'id', 'currency_id')
-            ->select(['id', 'symbol']);
+            ->select(['id', 'symbol', 'code']);
     }
 }

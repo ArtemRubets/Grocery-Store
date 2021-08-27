@@ -39,13 +39,13 @@
                             <input type="submit" value="Login">
                         </form>
 
-                        <a href="{{ route('login-with', ['company' => 'google']) }}" class="login-with-btn">
+                        <a href="{{ route('login', ['company' => 'google']) }}" class="login-with-btn">
                             <div class="login-with-icon-wrapper">
                                 <img class="login-with-icon" src="{{ asset('images/Google__G__Logo.svg') }}"/>
                             </div>
                             <p class="btn-text"><b>Sign in with Google</b></p>
                         </a>
-                        <a href="{{ route('login-with', ['company' => 'facebook']) }}" class="login-with-btn facebook">
+                        <a href="{{ route('login', ['company' => 'facebook']) }}" class="login-with-btn facebook">
                             <div class="login-with-icon-wrapper">
                                 <img class="login-with-icon" src="{{ asset('images/facebook_icon-icons.com_53612.svg') }}"/>
                             </div>

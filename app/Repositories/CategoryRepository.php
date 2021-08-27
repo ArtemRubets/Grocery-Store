@@ -15,31 +15,35 @@ class CategoryRepository extends CoreRepository implements ICategoryRepositoryIn
     }
 
     public function getCategoriesList(){
+        $columns = ['id', 'category_name' , 'category_slug', 'parent_category'];
         return $this->startCondition()->where('parent_category' , 0)->excerptWithoutCategory()
-            ->with('child')->get(['id', 'category_name' , 'category_slug', 'parent_category']);
+            ->with('child')->get($columns);
     }
 
     public function getCategoriesListForDashboard(){
-        return  $this->startCondition()->with('child')
-            ->get(['id' , 'category_name' , 'category_slug' , 'category_image' , 'parent_category']);
+        $columns = ['id', 'category_name', 'category_slug', 'category_image', 'parent_category'];
+        return  $this->startCondition()->with('child')->get($columns);
     }
 
     public function getCategoriesListForSelects(){
-        return $this->startCondition()->get(['id' , 'category_name']);
+        $columns = ['id' , 'category_name'];
+        return $this->startCondition()->get($columns);
     }
 
     public function getCategoriesListForProductCategories(){
-        return $this->startCondition()->get(['id' , 'category_name', 'category_slug', 'category_image']);
+        $columns = ['id' , 'category_name', 'category_slug', 'category_image'];
+        return $this->startCondition()->get($columns);
     }
 
     public function getCategoriesListForCategories(){
-        return $this->startCondition()->excerptWithoutCategory()->get(['id' , 'category_name', 'category_slug', 'category_image']);
+        $columns = ['id' , 'category_name', 'category_slug', 'category_image'];
+        return $this->startCondition()->excerptWithoutCategory()->get($columns);
     }
 
     public function getCategory($category_slug){
+        $columns = ['id', 'category_name', 'category_image', 'category_slug', 'category_description'];
         return $this->startCondition()->where('category_slug' , $category_slug)
-            ->excerptWithoutCategory()
-            ->firstOrFail(['id', 'category_name', 'category_image', 'category_slug', 'category_description']);
+            ->excerptWithoutCategory()->firstOrFail($columns);
     }
 
     public function find($id){
@@ -52,7 +56,8 @@ class CategoryRepository extends CoreRepository implements ICategoryRepositoryIn
 
     public function getWithoutCategory()
     {
-        return $this->startCondition()->where('category_slug', 'without-category')->first('id', 'category_slug');
+        $columns = ['id', 'category_slug'];
+        return $this->startCondition()->where('category_slug', 'without-category')->first($columns);
     }
 
     public function categoryDelete($category)

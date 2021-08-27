@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Auth\SocialiteLogin;
+use App\Auth\AbstractAuthFactory;
+use App\Auth\SocialiteFactory;
 use App\Http\Requests\RegisterFormRequest;
 use App\Interfaces\IUserRepositoryInterface;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -16,9 +18,13 @@ class AuthController extends MainController
 
     private $userRepository;
 
+    protected $user;
+    protected $authFactory;
+
     public function __construct(IUserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
+        $this->authFactory = new AbstractAuthFactory();
     }
 
     public function register(RegisterFormRequest $request)
@@ -47,24 +53,40 @@ class AuthController extends MainController
 
     }
 
-    public function login(Request $request)
+    public function login(Request $request, $company = null, $redirect = null)
     {
         if (Auth::check()) {
-            return back()->withErrors(['login' => "You already authorize"]);
+            return back()->withErrors(['login' => "You are already authorized"]);
         }
 
-        $data = $request->except(['_token']);
+        if ($request->isMethod('POST')){
+            $data = $request->except(['_token']);
 
-        if (Auth::attempt($data)) {
-            $user = Auth::user();
+            $basicFactory = $this->authFactory->basicFactory();
+            $response = $basicFactory->build()->login($data);
 
-            session(['user_name' => $user->name]);
-            session(['user_role' => $user->roles->first()->role]);
+            if ($response instanceof RedirectResponse) return $response;
 
-            return redirect()->intended(route('dashboard.home'));
+            $this->user = Auth::user();
+        }else{
+            if ($company && $redirect){
+                $socialiteFactory = $this->authFactory->socialiteFactory();
+                $socialiteFactory->build($company)->login($this->userRepository);
+
+                $this->user = Auth::user();
+
+            }else{
+                $socialiteFactory = $this->authFactory->socialiteFactory();
+
+                return $socialiteFactory->build($company)->loginRequest();
+            }
         }
 
-        return back()->withErrors(['login' => "Not correct login or password"]);
+        session(['user_name' => $this->user->name]);
+        session(['user_role' => $this->user->roles->first()->role]);
+
+        return redirect()->intended(route('dashboard.home'));
+
     }
 
     public function logout()
@@ -88,25 +110,4 @@ class AuthController extends MainController
         }
         abort(404);
     }
-
-    public function loginWith($company)
-    {
-        return (new SocialiteLogin($company))->loginRequest();
-    }
-
-    public function loginWithRedirect($company = 'facebook')
-    {
-        //TODO Facebook doesn't work without SSL
-        $serviceUserData = (new SocialiteLogin($company))->getUserData();
-
-        $user = $this->userRepository->firstOrCreateUser($serviceUserData);
-
-        Auth::login($user);
-
-        session(['user_name' => $user->name]);
-        session(['user_role' => $user->roles->first()->role]);
-
-        return redirect()->intended(route('dashboard.home'));
-    }
-
 }

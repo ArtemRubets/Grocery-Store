@@ -27,7 +27,6 @@ class UserRepository extends CoreRepository implements IUserRepositoryInterface
             $role = Role::where('role', 'guest')->first();
             $user->roles()->attach($role);
         }
-
         return $user;
     }
 }

@@ -108,10 +108,10 @@ Route::post('/send-newsletter', [IndexController::class, 'sendNewsletter'])->nam
 Route::prefix('/auth')->group(function () {
     Route::get('/', [AuthController::class, 'index'])->name('auth');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::match(['POST', 'GET'], '/login/{company?}/{redirect?}', [AuthController::class, 'login'])->name('login');
 
-    Route::get('/login/with/{company}', [AuthController::class, 'loginWith'])->name('login-with');
-    Route::get('/login/with/redirect/{company}', [AuthController::class, 'loginWithRedirect'])->name('login-with-redirect');
+//    Route::get('/login/with/{company}', [AuthController::class, 'loginWith'])->name('login-with');
+//    Route::get('/login/with/redirect/{company}', [AuthController::class, 'loginWithRedirect'])->name('login-with-redirect');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
